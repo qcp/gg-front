@@ -29,18 +29,6 @@
       <v-btn color="primary" @click="confirm">Send form</v-btn>
       <v-spacer />
     </v-row>
-
-    <v-overlay :value="overlay">
-      <v-card>
-        <v-card-text>Your answers saved! Thx.</v-card-text>
-        <v-card-actions>
-          <v-spacer />
-          <v-btn color="secondary" @click="$store.dispatch('logout')">Leave</v-btn>
-          <v-btn color="success" @click="overlay = false">Continue</v-btn>
-          <v-spacer />
-        </v-card-actions>
-      </v-card>
-    </v-overlay>
   </div>
 </template>
 
@@ -50,13 +38,34 @@ import components from "@/../components";
 export default {
   data: () => ({
     loading: true,
-    overlay: false,
     inquirer: {
       general: {},
       content: []
     }
   }),
   methods: {
+    reload: function() {
+      this.loading = true;
+
+      this.$backCall(
+        `/e/viewer?_id=${this.$store.getters.tokenData.inquirerId}`,
+        "GET"
+      )
+        .then(res => {
+          this.inquirer = res.inquirer;
+          this.inquirer.content.forEach(criteria => {
+            const component = components.find(
+              o => o.sysname === criteria.component
+            );
+            criteria.template = component.examinee; //не реактивное свойство
+            if (!criteria.answer)
+              this.$set(criteria, "answer", component.defaultAnswer()); //реактивное свойство
+          });
+        })
+        .then(() => {
+          this.loading = false;
+        });
+    },
     confirm: function() {
       this.loading = true;
       this.$backCall("/e/viewer", "POST", {
@@ -68,31 +77,24 @@ export default {
         }))
       }).then(() => {
         this.loading = false;
-        this.overlay = true;
+        this.$store.dispatch("showModal", {
+          persistent: true,
+          title: "Thx for your answers",
+          confirmBtn: {
+            text: "Leave",
+            color: "warning",
+            callback: () => this.$store.dispatch("logout")
+          },
+          cancelBtn: {
+            text: "Back to editing",
+            color: "success",
+          }
+        });
       });
     }
   },
   beforeMount: function() {
-    this.loading = true;
-
-    this.$backCall(
-      `/e/viewer?_id=${this.$store.getters.tokenData.inquirerId}`,
-      "GET"
-    )
-      .then(res => {
-        this.inquirer = res.inquirer;
-        this.inquirer.content.forEach(criteria => {
-          const component = components.find(
-            o => o.sysname === criteria.component
-          );
-          criteria.template = component.examinee; //не реактивное свойство
-          if (!criteria.answer)
-            this.$set(criteria, "answer", component.defaultAnswer()); //реактивное свойство
-        });
-      })
-      .then(() => {
-        this.loading = false;
-      });
+    this.reload();
   }
 };
 </script>

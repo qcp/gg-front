@@ -58,7 +58,6 @@ const actions = {
 };
 const getters = {
     user: state => state.user,
-    role: state => state.user ? state.user.role : null,
     token: state => state.token,
     tokenData: state => parseJwt(state.token)
 };

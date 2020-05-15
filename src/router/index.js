@@ -15,7 +15,7 @@ async function checkUserRole(to, from, next) {
     if (store.getters.token && !store.getters.user)
       return store.dispatch("login", store.getters.token);
   }).then(() => {
-    if (store.getters.role == to.matched[0].meta.role)
+    if (store.getters.user.role == to.matched[0].meta.role)
       next();
     else
       throw "Wrong route";

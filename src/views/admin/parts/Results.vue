@@ -24,28 +24,33 @@ export default {
     reload: function() {
       this.loading = true;
 
-      this.$backCall(`/a/builder/results?_id=${this.inquirerId}`, "GET").then(res => {          
-          this.headers = [];
-          this.headers.push({
-              text: 'Examinee',
-              value: '_examinee'
-          });
-          this.headers.push(...res.table.headers.map(o => ({
-              text: o.description || o.name,
-              value: o.name
-          })));
-          this.results = [];
-          for(let result of res.table.results)
-          {
+      this.$backCall(`/a/builder/results?_id=${this.inquirerId}`, "GET").then(
+        res => {
+          if (res.table) {
+            this.headers = [];
+            this.headers.push({
+              text: "Examinee",
+              value: "_examinee"
+            });
+            this.headers.push(
+              ...res.table.headers.map(o => ({
+                text: o.description || o.name,
+                value: o.name
+              }))
+            );
+            this.results = [];
+            for (let result of res.table.results) {
               let obj = {};
-              obj['_examinee'] = result.examinee.name;
-              for(let parameter of result.parameters)
+              obj["_examinee"] = result.examinee.name;
+              for (let parameter of result.parameters)
                 obj[parameter.name] = parameter.value;
 
               this.results.push(obj);
+            }
           }
           this.loading = false;
-      });
+        }
+      );
     }
   },
   beforeMount: function() {

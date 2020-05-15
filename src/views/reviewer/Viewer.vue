@@ -3,7 +3,7 @@
     <v-card class="mx-auto" max-width="700">
       <v-toolbar flat>
         <v-toolbar-title>
-          <span>Hi, {{$store.getters.user.name}}! </span>
+          <span>Hi, {{$store.getters.user.name}}!</span>
           <span class="grey--text">(reviewed: {{viewed}} of {{all}})</span>
         </v-toolbar-title>
 
@@ -102,6 +102,7 @@ export default {
 
     viewed: 0,
     all: 0,
+    answersGen: {},
 
     exist: false,
     current: {
@@ -110,14 +111,97 @@ export default {
       content: {},
       template: {},
       decision: {}
-    },
-    answersGen: {}
+    }
   }),
   methods: {
+    reload: function() {
+      this.loading = true;
+      this.answersGen = {};
+
+      this.$backCall(
+        `/r/viewer?_id=${this.$store.getters.tokenData.inquirerId}`,
+        "GET"
+      )
+        .then(res => {
+          this.all += res.answers.length;
+          const reviewerId = this.$store.getters.user._id;
+          this.answersGen = (function*() {
+            for (let answer of res.answers) {
+              const template = components.find(
+                o => o.sysname === answer.content.component
+              ).reviewer;
+              const last = answer.content.decisionChain
+                ? answer.content.decisionChain.slice(-1)[0]
+                : null;
+              let parameters = [];
+              for (let p of answer.content.parameters) {
+                parameters.push({
+                  name: p.name,
+                  value: last
+                    ? last.parameters.find(o => o.name === p.name).value
+                    : ""
+                });
+              }
+              if (answer.content.decisionChain) {
+                for (let d of answer.content.decisionChain) {
+                  let api = answer.apis.find(o => o._id === d.reviewerId);
+                  let user = answer.reviewers.find(o => o._id === d.reviewerId);
+                  d.reviewer = {
+                    name: api ? api.name : user.name,
+                    type: api ? "api" : "user"
+                  };
+                  d.pretty = d.parameters.reduce(
+                    (acc, p) => `${acc}${p.name}=${p.value ? p.value : " "}; `,
+                    ""
+                  );
+                }
+              }
+
+              yield {
+                inquirerId: answer._id,
+                examinee: answer.examinee,
+                content: answer.content,
+                template: template,
+                decision: {
+                  reviewerId: reviewerId,
+                  step: answer.content.reviewerNext.step,
+                  date: new Date(),
+                  comment: "",
+                  parameters: parameters
+                }
+              };
+            }
+          })();
+        })
+        .then(() => {
+          this.loading = false;
+          this.next();
+        });
+    },
     next: function() {
       const next = this.answersGen.next();
       this.current = next.value;
       this.exist = !next.done;
+      if (next.done) {
+        this.$store.dispatch("showModal", {
+          persistent: true,
+          title: `You reviewed ${this.viewed} answers!`,
+          text: "You can refresh available answers or come back later.",
+          confirmBtn: {
+            text: "Leave",
+            color: "warning",
+            callback: () => this.$store.dispatch("logout")
+          },
+          cancelBtn: {
+            text: "Refresh",
+            color: "success",
+            callback: () => {
+              this.reload();
+              this.$store.dispatch("hideModal");
+            }
+          }
+        });
+      }
     },
     confirm: function() {
       this.loading = true;
@@ -134,67 +218,7 @@ export default {
     }
   },
   beforeMount: function() {
-    this.loading = true;
-
-    this.$backCall(
-      `/r/viewer?_id=${this.$store.getters.tokenData.inquirerId}`,
-      "GET"
-    )
-      .then(res => {
-        this.all = res.answers.length;
-        const reviewerId = this.$store.getters.user._id;
-        this.answersGen = (function*() {
-          for (let answer of res.answers) {
-            const template = components.find(
-              o => o.sysname === answer.content.component
-            ).reviewer;
-            const last = answer.content.decisionChain
-              ? answer.content.decisionChain.slice(-1)[0]
-              : null;
-            let parameters = [];
-            for (let p of answer.content.parameters) {
-              parameters.push({
-                name: p.name,
-                value: last
-                  ? last.parameters.find(o => o.name === p.name).value
-                  : ""
-              });
-            }
-            if (answer.content.decisionChain) {
-              for (let d of answer.content.decisionChain) {
-                let api = answer.apis.find(o => o._id === d.reviewerId);
-                let user = answer.reviewers.find(o => o._id === d.reviewerId);
-                d.reviewer = {
-                  name: api ? api.name : user.name,
-                  type: api ? "api" : "user"
-                };
-                d.pretty = d.parameters.reduce(
-                  (acc, p) => `${acc}${p.name}=${p.value ? p.value : " "}; `,
-                  ""
-                );
-              }
-            }
-
-            yield {
-              inquirerId: answer._id,
-              examinee: answer.examinee,
-              content: answer.content,
-              template: template,
-              decision: {
-                reviewerId: reviewerId,
-                step: answer.content.reviewerNext.step,
-                date: new Date(),
-                comment: "",
-                parameters: parameters
-              }
-            };
-          }
-        })();
-      })
-      .then(() => {
-        this.loading = false;
-        this.next();
-      });
+    this.reload();
   }
 };
 </script>

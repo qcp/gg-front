@@ -86,7 +86,7 @@ export default {
   },
   methods: {
     addToList: function(list) {
-      list.unshift({ _id: this.$nextMongoId() });
+      list.unshift({ _id: this.$nextMongoId(), metadata: {} });
     },
     removeFromList: function(list, key) {
       this.$delete(
