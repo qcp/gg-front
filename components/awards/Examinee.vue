@@ -17,6 +17,9 @@
           </v-list-item-icon>
           <v-list-item-title>{{file.filename}}</v-list-item-title>
           <v-btn icon dense target="_blank" :href="$downloadFileUrl(file._id)">
+            <v-icon>mdi-open-in-new</v-icon>
+          </v-btn>
+          <v-btn icon dense @click="$backDownloadFile(file._id, file.filename)">
             <v-icon>mdi-download</v-icon>
           </v-btn>
           <v-btn icon dense @click="deleteFile(file._id)">
@@ -46,8 +49,11 @@ export default {
       });
     },
     deleteFile: function(id) {
-      this.$backCall(`/utils/delete-file?_id=${id}`, "DELETE").then(() => {        
-        this.$delete(this.answer.files, this.answer.files.findIndex(o => o._id === id));
+      this.$backCall(`/utils/delete-file?_id=${id}`, "DELETE").then(() => {
+        this.$delete(
+          this.answer.files,
+          this.answer.files.findIndex(o => o._id === id)
+        );
       });
     }
   },

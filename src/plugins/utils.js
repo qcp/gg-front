@@ -1,3 +1,5 @@
+import fs from 'file-saver';
+
 import config from "@/config";
 import store from "@/store";
 
@@ -40,8 +42,11 @@ function backUploadFiles(files) {
     return Promise.reject(err);
   });
 }
-function downloadFileUrl(id){
+function downloadFileUrl(id) {
   return `${config.backEndpoint}/utils/download-file?_id=${id}`;
+}
+function backDownloadFile(id, name) {
+  return fs.saveAs(`${config.backEndpoint}/utils/download-file?_id=${id}`, name);
 }
 
 const mongoIdList = [];
@@ -63,6 +68,7 @@ export default {
     Vue.backCall = backCall
 
     Vue.prototype.$backUploadFiles = backUploadFiles
+    Vue.prototype.$backDownloadFile = backDownloadFile
     Vue.prototype.$downloadFileUrl = downloadFileUrl
   }
 }
