@@ -37,12 +37,14 @@
                         <v-row>
                           <v-text-field
                             v-model="parameter.name"
+                            :rules="[v => !!v || 'Parameter name is required']"
                             class="ml-3 mr-2"                            
-                            label="Parameter name"
+                            label="Parameter short name"
                             dense
                           ></v-text-field>
                           <v-text-field
                             v-model="parameter.description"
+                            :rules="[v => !!v || 'Parameter description is required']"
                             class="mr-2"
                             label="Parameter description"
                             dense
@@ -98,6 +100,7 @@
                       >{{chainLinkIndex+1}}</v-chip>
                       <v-select
                         v-model="chainLink.reviewers"
+                        :rules="[v => !!v.length || 'At least one rewiewer required']"
                         :items="reviewersList"
                         item-value="_id"
                         :label="`Reviewers for ${chainLinkIndex+1} step`"

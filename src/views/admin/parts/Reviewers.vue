@@ -20,8 +20,18 @@
     <v-list class="mt-n4">
       <v-list-item class="my-4 align-start" v-for="(user) in reviewers.users" :key="user._id">
         <v-card width="100%" class="d-flex align-center">
-          <v-text-field v-model="user.name" class="mx-2" label="Name"></v-text-field>
-          <v-text-field v-model="user.email" class="mx-2" label="Email"></v-text-field>
+          <v-text-field
+            v-model="user.name"
+            :rules="[v => !!v || 'Name is required']"
+            class="mx-2"
+            label="Name"
+          ></v-text-field>
+          <v-text-field
+            v-model="user.email"
+            :rules="[v => !!v || 'Email is required']"
+            class="mx-2"
+            label="Email"
+          ></v-text-field>
           <v-menu
             offset-y
             bottom
@@ -80,7 +90,12 @@
       <v-list-item class="my-4 align-start" v-for="(group) in reviewers.groups" :key="group._id">
         <v-card width="100%">
           <div class="d-flex align-center">
-            <v-text-field v-model="group.name" class="mx-2" label="Name"></v-text-field>
+            <v-text-field
+              v-model="group.name"
+              :rules="[v => !!v || 'Name is required']"
+              class="mx-2"
+              label="Name"
+            ></v-text-field>
 
             <c-bth-tip
               class="mr-2"
@@ -93,6 +108,7 @@
           </div>
           <v-select
             v-model="group.reviewers"
+            :rules="[v => !!v.length || 'At least one rewiewer required']"
             :items="reviewers.users"
             item-text="name"
             item-value="_id"
@@ -134,8 +150,18 @@
     <v-list class="mt-n4">
       <v-list-item class="my-4 align-start" v-for="(api) in reviewers.apis" :key="api._id">
         <v-card width="100%" class="d-flex align-center">
-          <v-text-field v-model="api.name" class="mx-2" label="Name"></v-text-field>
-          <v-text-field v-model="api.url" class="mx-2" label="Url"></v-text-field>
+          <v-text-field
+            v-model="api.name"
+            :rules="[v => !!v || 'Name is required']"
+            class="mx-2"
+            label="Name"
+          ></v-text-field>
+          <v-text-field
+            v-model="api.url"
+            :rules="[v => !!v || 'Url is required']"
+            class="mx-2"
+            label="Url"
+          ></v-text-field>
           <c-bth-tip
             class="ml-2"
             icon

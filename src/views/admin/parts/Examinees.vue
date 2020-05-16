@@ -20,8 +20,18 @@
     <v-list class="mt-n4">
       <v-list-item class="my-4 align-start" v-for="(examinee) in examinees" :key="examinee._id">
         <v-card width="100%" class="d-flex align-center">
-          <v-text-field v-model="examinee.name" class="mx-2" label="Name"></v-text-field>
-          <v-text-field v-model="examinee.email" class="mx-2" label="Email"></v-text-field>
+          <v-text-field
+            v-model="examinee.name"
+            :rules="[v => !!v || 'Name is required']"
+            class="mx-2"
+            label="Name"
+          ></v-text-field>
+          <v-text-field
+            v-model="examinee.email"
+            :rules="[v => !!v || 'Email is required']"
+            class="mx-2"
+            label="Email"
+          ></v-text-field>
           <v-menu
             offset-y
             bottom
@@ -42,7 +52,8 @@
             </template>
             <v-card>
               <v-card-text class="py-2">
-                <strong>Email:</strong><span>{{`${examinee.metadata.emailSended?'sended':'not sended'}`}}</span>
+                <strong>Email:</strong>
+                <span>{{`${examinee.metadata.emailSended?'sended':'not sended'}`}}</span>
                 <c-bth-tip icon tooltip="Resend email" @click="sendMail(examinee)">
                   <v-icon>mdi-gmail</v-icon>
                 </c-bth-tip>

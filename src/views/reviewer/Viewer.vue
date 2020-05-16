@@ -40,7 +40,7 @@
           </template>
           <v-card>
             <v-card-title dense class="pa-2">{{decision.pretty}}</v-card-title>
-            <v-card-subtitle dense class="pa-2">{{decision.reviewer.name}}</v-card-subtitle>
+            <v-card-subtitle dense class="pa-2">{{new Date(decision.date).toLocaleString()}}: <b>{{decision.reviewer.name}}</b></v-card-subtitle>
             <v-divider />
             <v-card-text dense class="pa-2">{{decision.comment}}</v-card-text>
           </v-card>
@@ -175,30 +175,33 @@ export default {
         })
         .then(() => {
           this.loading = false;
-          this.next();
+          this.next(true);
         });
     },
-    next: function() {
+    next: function(isFirstLoad) {
       const next = this.answersGen.next();
-      this.current = next.value;
-      this.exist = !next.done;
-      if (next.done) {
+      if (next.value) {
+        this.current = next.value;
+      }
+
+      if (next.done && !isFirstLoad) {
+        this.reload();
+      } else if (!next.done && isFirstLoad) {
+        this.exist = true;
+      } else if (next.done && isFirstLoad) {
+        this.exist = false;
         this.$store.dispatch("showModal", {
           persistent: true,
           title: `You reviewed ${this.viewed} answers!`,
-          text: "You can refresh available answers or come back later.",
+          text:
+            "There is no available answers for review, please come back later.",
           confirmBtn: {
             text: "Leave",
             color: "warning",
             callback: () => this.$store.dispatch("logout")
           },
           cancelBtn: {
-            text: "Refresh",
-            color: "success",
-            callback: () => {
-              this.reload();
-              this.$store.dispatch("hideModal");
-            }
+            color: "success"
           }
         });
       }
