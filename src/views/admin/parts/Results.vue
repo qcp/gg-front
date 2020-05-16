@@ -5,11 +5,8 @@
         <v-toolbar flat>
           There are all examinees who already answered
           <v-spacer />
-          <c-bth-tip icon tooltip="Export excel">
-            <v-icon>mdi-file-export</v-icon>
-          </c-bth-tip>
-          <c-bth-tip icon tooltip="Export raw">
-            <v-icon>mdi-code-brackets</v-icon>
+          <c-bth-tip icon tooltip="Export excel" @click="exportExcel">
+            <v-icon color="green darken-2">mdi-file-export</v-icon>
           </c-bth-tip>
           <c-bth-tip icon tooltip="Refresh" @click="reload">
             <v-icon>mdi-refresh</v-icon>
@@ -21,6 +18,8 @@
 </template>
 
 <script>
+import excel from "@/plugins/excel";
+
 export default {
   props: {
     inquirerId: String,
@@ -66,6 +65,17 @@ export default {
           }
           this.loading = false;
         }
+      );
+    },
+    exportExcel: function() {
+      excel.export(
+        "Results",
+        this.headers.map(o => ({
+          key: o.value,
+          header: o.text,
+          width: 20
+        })),
+        this.results
       );
     }
   },

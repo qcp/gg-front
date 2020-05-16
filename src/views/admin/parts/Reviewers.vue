@@ -3,11 +3,11 @@
     <v-card-title class="sticky">
       <v-icon color="cyan" class="mr-2">mdi-account</v-icon>Reviewers
       <v-spacer />
-      <c-bth-tip icon tooltip="Export excel" disabled>
-        <v-icon>mdi-file-export</v-icon>
+      <c-bth-tip icon tooltip="Export excel" @click="exportExcelReviewers">
+        <v-icon color="green darken-2">mdi-file-export</v-icon>
       </c-bth-tip>
       <c-bth-tip icon tooltip="Import excel" disabled>
-        <v-icon>mdi-file-import</v-icon>
+        <v-icon color="green darken-2">mdi-file-import</v-icon>
       </c-bth-tip>
       <c-bth-tip icon tooltip="Send email to all" disabled>
         <v-icon>mdi-gmail</v-icon>
@@ -136,11 +136,11 @@
     <v-card-title class="sticky">
       <v-icon color="lime" class="mr-2">mdi-robot</v-icon>Auto tests
       <v-spacer />
-      <c-bth-tip icon tooltip="Export excel" disabled>
-        <v-icon>mdi-file-export</v-icon>
+      <c-bth-tip icon tooltip="Export excel" @click="exportExcelApis">
+        <v-icon color="green darken-2">mdi-file-export</v-icon>
       </c-bth-tip>
       <c-bth-tip icon tooltip="Import excel" disabled>
-        <v-icon>mdi-file-import</v-icon>
+        <v-icon color="green darken-2">mdi-file-import</v-icon>
       </c-bth-tip>
       <c-bth-tip icon tooltip="Add new auto test" @click="addToList(reviewers.apis)">
         <v-icon>mdi-plus-circle-outline</v-icon>
@@ -186,6 +186,8 @@
 </template>
 
 <script>
+import excel from "@/plugins/excel";
+
 export default {
   props: {
     value: Object,
@@ -237,6 +239,42 @@ export default {
         .catch(err => {
           this.$set(api.metadata, "available", false);
         });
+    },
+    exportExcelReviewers: function() {
+      excel.export(
+        "Reviewers",
+        [
+          {
+            key: "name",
+            header: "Name",
+            width: 50
+          },
+          {
+            key: "email",
+            header: "Email",
+            width: 50
+          }
+        ],
+        this.reviewers.users
+      );
+    },
+    exportExcelApis: function() {
+      excel.export(
+        "Apis",
+        [
+          {
+            key: "name",
+            header: "Name",
+            width: 50
+          },
+          {
+            key: "url",
+            header: "Url",
+            width: 50
+          }
+        ],
+        this.reviewers.apis
+      );
     }
   }
 };

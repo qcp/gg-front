@@ -3,11 +3,11 @@
     <v-card-title class="sticky">
       Examinees
       <v-spacer />
-      <c-bth-tip icon tooltip="Export excel" disabled>
-        <v-icon>mdi-file-export</v-icon>
+      <c-bth-tip icon tooltip="Export excel" @click="exportExcel">
+        <v-icon color="green darken-2">mdi-file-export</v-icon>
       </c-bth-tip>
       <c-bth-tip icon tooltip="Import excel" disabled>
-        <v-icon>mdi-file-import</v-icon>
+        <v-icon color="green darken-2">mdi-file-import</v-icon>
       </c-bth-tip>
       <c-bth-tip icon tooltip="Send email to all" disabled>
         <v-icon>mdi-gmail</v-icon>
@@ -79,6 +79,8 @@
 </template>
 
 <script>
+import excel from "@/plugins/excel";
+
 export default {
   props: {
     value: Array,
@@ -116,6 +118,24 @@ export default {
         .catch(err => {
           this.$set(recepient.metadata, "emailSended", false);
         });
+    },
+    exportExcel: function() {
+      excel.export(
+        "Examinees",
+        [
+          {
+            key: "name",
+            header: "Name",
+            width: 50
+          },
+          {
+            key: "email",
+            header: "Email",
+            width: 50
+          }
+        ],
+        this.examinees
+      );
     }
   }
 };
