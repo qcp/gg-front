@@ -73,6 +73,14 @@
     ],
     "configureWebpack": {
       "devtool": "source-map"
+    },
+    "pwa": {
+      "name": "GG",
+      "themeColor": "#1E1E1E",
+      "msTileColor": "#FAFAFA",
+      "manifestOptions": {
+        "background_color": "#FAFAFA"
+      }
     }
   }
 }

@@ -52,12 +52,12 @@ const routes = [
       {
         path: "dashboard",
         name: "DeveloperDashboard",
-        component: () => import(/* webpackChunkName: "a" */ "../views/admin/Dashboard.vue")
+        component: () => import("../views/admin/Dashboard.vue")
       },
       {
         path: "builder",
         name: "DeveloperBuilder",
-        component: () => import(/* webpackChunkName: "a" */ "../views/admin/Builder.vue")
+        component: () => import("../views/admin/Builder.vue")
       }
     ],
     beforeEnter: checkUserRole
@@ -72,7 +72,7 @@ const routes = [
       {
         path: "viewer",
         name: "ExamineeViewer",
-        component: () => import(/* webpackChunkName: "e" */ "../views/examinee/Viewer.vue")
+        component: () => import("../views/examinee/Viewer.vue")
       }
     ],
     beforeEnter: checkUserRole
@@ -87,7 +87,7 @@ const routes = [
       {
         path: "viewer",
         name: "ReviewerViewer",
-        component: () => import(/* webpackChunkName: "r" */ "../views/reviewer/Viewer.vue")
+        component: () => import("../views/reviewer/Viewer.vue")
       }
     ],
     beforeEnter: checkUserRole
@@ -96,7 +96,7 @@ const routes = [
     path: "/about",
     name: "About",
     component: function () {
-      return import(/* webpackChunkName: "about" */ "../views/About.vue");
+      return import("../views/About.vue");
     }
   }
 ];
