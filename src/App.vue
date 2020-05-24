@@ -1,6 +1,6 @@
 <template>
   <v-app>    
-    <v-app-bar  app dark color="primary" extended collapse-on-scroll>
+    <v-app-bar v-if="$store.getters.user" app dark color="primary" extended collapse-on-scroll>
       <v-toolbar-title>{{$route.name}}</v-toolbar-title>
       <v-spacer></v-spacer>
       <c-bth-tip icon tooltip="Help" href="https://github.com/qcp/gg-common">
