@@ -1,18 +1,15 @@
 <template>
-  <v-card class="mx-auto" max-width="700">
-    <v-toolbar flat>
-      <v-toolbar-title class="grey--text">Dashboard</v-toolbar-title>
-
-      <v-spacer></v-spacer>
-
-      <v-btn icon @click="$router.push('builder')">
-        <v-icon>mdi-plus-circle-outline</v-icon>
-      </v-btn>
-
-      <v-btn icon @click="$store.dispatch('logout')">
-        <v-icon>mdi-exit-run</v-icon>
-      </v-btn>
-    </v-toolbar>
+  <v-card class="custom">
+    <div style="position: sticky; top: 10px">
+      <v-tooltip top>
+        <template v-slot:activator="{ on }">
+          <v-btn v-on="on" fab small absolute style="right:-50px" @click="$router.push('builder')">
+            <v-icon color="success">mdi-plus-circle-outline</v-icon>
+          </v-btn>
+        </template>
+        Create new inquirer
+      </v-tooltip>
+    </div>
 
     <v-data-table
       :headers="headers"
@@ -30,8 +27,8 @@ export default {
   data: () => ({
     loading: true,
     headers: [
-      { text: "title", value: "general.title" },
-      { text: "description", value: "general.description" }
+      { text: "Inquirer", value: "general.title" },
+      { text: "Description", value: "general.description" }
     ],
     items: []
   }),
@@ -50,5 +47,9 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
+.custom {
+  margin-top: -60px;
+  z-index: 6;
+}
 </style>

@@ -1,5 +1,5 @@
 <template>
-  <div class="small-window">
+  <v-layout wrap align-center justify-center>
     <v-overlay :value="overlay">
       <v-progress-circular indeterminate size="64"></v-progress-circular>
     </v-overlay>
@@ -60,7 +60,7 @@
         </v-tabs-items>
       </v-card>
     </v-form>
-  </div>
+  </v-layout>
 </template>
 
 <script>

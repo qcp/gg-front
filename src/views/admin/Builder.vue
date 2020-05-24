@@ -1,21 +1,26 @@
 <template>
-  <v-card class="mx-auto" max-width="1300">
-    <v-toolbar flat>
-      <c-bth-tip icon tooltip="Go to dashboard" @click="$router.push('dashboard')">
-        <v-icon>mdi-backburger</v-icon>
-      </c-bth-tip>
-      <v-toolbar-title class="grey--text">Builder</v-toolbar-title>
+  <v-card class="custom">
+    <div style="position: sticky; top: 10px">
+      <v-tooltip top>
+        <template v-slot:activator="{ on }">
+          <v-btn v-on="on" fab small absolute style="left:-50px" @click="$router.push('dashboard')">
+            <v-icon>mdi-backburger</v-icon>
+          </v-btn>
+        </template>
+        Back to dashboard
+      </v-tooltip>
 
-      <v-spacer></v-spacer>
-      <c-bth-tip icon :loading="loading" tooltip="Save inquirer" @click="save">
-        <v-icon color="primary">mdi-content-save</v-icon>
-      </c-bth-tip>
-      <c-bth-tip icon tooltip="Exit" @click="$store.dispatch('logout')">
-        <v-icon>mdi-exit-run</v-icon>
-      </c-bth-tip>
-    </v-toolbar>
-
-    <v-progress-linear :active="loading" height="2" indeterminate color="primary"></v-progress-linear>
+      <v-tooltip top>
+        <template v-slot:activator="{ on }">
+          <v-btn v-on="on" fab small absolute style="right:-50px" @click="save">
+            <v-badge :color="saveButton.color" dot>
+              <v-icon color="primary">mdi-content-save</v-icon>
+            </v-badge>
+          </v-btn>
+        </template>
+        {{saveButton.text}}
+      </v-tooltip>
+    </div>
 
     <v-card flat :disabled="loading">
       <v-tabs v-model="tab" grow center-active show-arrows>
@@ -26,6 +31,7 @@
         <v-tab key="preview">Preview</v-tab>
         <v-tab key="results">Results</v-tab>
       </v-tabs>
+      <v-progress-linear :active="loading" height="2" indeterminate color="primary"></v-progress-linear>
       <v-tabs-items v-model="tab">
         <v-tab-item key="general">
           <General v-model="inquirer.general" />
@@ -43,7 +49,7 @@
           <Preview :inquirer="inquirer" :isActive="tab==4" />
         </v-tab-item>
         <v-tab-item key="results">
-          <Results :inquirerId="inquirer._id" :isActive="tab==5"/>
+          <Results :inquirerId="inquirer._id" :isActive="tab==5" />
         </v-tab-item>
       </v-tabs-items>
     </v-card>
@@ -70,6 +76,8 @@ export default {
   data: () => ({
     tab: 0,
     loading: true,
+    lastSave: new Date(),
+    lastChange: new Date(),
     inquirer: {
       _id: "",
       general: {
@@ -85,6 +93,42 @@ export default {
       apis: []
     }
   }),
+  watch: {
+    inquirer: {
+      handler: function() {
+        this.lastChange = new Date();
+      },
+      deep: true
+    },
+    examinees: {
+      handler: function() {
+        this.lastChange = new Date();
+      },
+      deep: true
+    },
+    reviewers: {
+      handler: function() {
+        this.lastChange = new Date();
+      },
+      deep: true
+    }
+  },
+  computed: {
+    saveButton: function() {
+      let color = "secondary";
+      let text = "Save changes";
+
+      if (this.lastSave < this.lastChange) {
+        color = "warning";
+        text = `Unsaved changes sinse ${this.lastChange.toLocaleTimeString()}`;
+      } else {
+        color = "success";
+        text = `Last save ${this.lastSave.toLocaleTimeString()}`;
+      }
+
+      return { color: color, text: text };
+    }
+  },
   methods: {
     save: function() {
       this.loading = true;
@@ -118,7 +162,10 @@ export default {
           groups: this.reviewers.groups,
           apis: this.reviewers.apis
         })
-      ]).then(() => (this.loading = false));
+      ]).then(() => {
+        this.loading = false;
+        this.lastSave = new Date();
+      });
     },
     load: function(id) {
       return Promise.all([
@@ -148,5 +195,9 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
+.custom {
+  margin-top: -60px;
+  z-index: 6;
+}
 </style>

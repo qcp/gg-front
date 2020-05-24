@@ -1,28 +1,6 @@
 <template>
   <div>
-    <v-card class="mx-auto" max-width="700">
-      <v-toolbar flat>
-        <v-toolbar-title>
-          <span>Hi, {{$store.getters.user.name}}!</span>
-          <span class="grey--text">(reviewed: {{viewed}} of {{all}})</span>
-        </v-toolbar-title>
-
-        <v-spacer></v-spacer>
-
-        <c-bth-tip icon tooltip="Exit" @click="$store.dispatch('logout')">
-          <v-icon>mdi-exit-run</v-icon>
-        </c-bth-tip>
-      </v-toolbar>
-      <v-progress-linear :active="loading" height="2" indeterminate color="primary"></v-progress-linear>
-    </v-card>
-
-    <v-card
-      v-if="exist"
-      class="my-4 pa-4 mx-auto"
-      max-width="700"
-      :loading="loading"
-      :disabled="loading"
-    >
+    <div v-if="exist">
       <v-card-subtitle v-if="current.content.decisionChain" class="pb-1">Previosly reviewers</v-card-subtitle>
       <v-timeline v-if="current.content.decisionChain" dense>
         <v-timeline-item
@@ -40,7 +18,10 @@
           </template>
           <v-card>
             <v-card-title dense class="pa-2">{{decision.pretty}}</v-card-title>
-            <v-card-subtitle dense class="pa-2">{{new Date(decision.date).toLocaleString()}}: <b>{{decision.reviewer.name}}</b></v-card-subtitle>
+            <v-card-subtitle dense class="pa-2">
+              {{new Date(decision.date).toLocaleString()}}:
+              <b>{{decision.reviewer.name}}</b>
+            </v-card-subtitle>
             <v-divider />
             <v-card-text dense class="pa-2">{{decision.comment}}</v-card-text>
           </v-card>
@@ -78,15 +59,18 @@
         <v-card-text class="py-0">
           <v-textarea v-model="current.decision.comment" rows="3" label="Commment"></v-textarea>
         </v-card-text>
-
-        <v-card-actions>
-          <v-spacer />
-          <v-btn @click="next">Skip</v-btn>
-          <v-btn @click="confirm" color="primary">Сonfirm</v-btn>
-          <v-spacer />
-        </v-card-actions>
       </v-card>
-    </v-card>
+      <v-row class="mt-4">
+        <v-spacer />
+        <v-btn @click="next">Skip</v-btn>
+        <v-spacer />
+        <v-btn @click="confirm" color="primary">Сonfirm</v-btn>
+        <v-spacer />
+      </v-row>
+    </div>
+    <v-overlay v-else-if="loading">
+      <v-progress-circular indeterminate size="64"></v-progress-circular>
+    </v-overlay>
     <v-card v-else class="my-4 mx-auto" max-width="700">
       <v-card-title>There no criterias for review.</v-card-title>
     </v-card>
@@ -135,11 +119,12 @@ export default {
                 : null;
               let parameters = [];
               for (let p of answer.content.parameters) {
+                let param = last
+                  ? last.parameters.find(o => o.name === p.name)
+                  : null;
                 parameters.push({
                   name: p.name,
-                  value: last
-                    ? last.parameters.find(o => o.name === p.name).value
-                    : ""
+                  value: param ? param.value : ""
                 });
               }
               if (answer.content.decisionChain) {
@@ -190,20 +175,23 @@ export default {
         this.exist = true;
       } else if (next.done && isFirstLoad) {
         this.exist = false;
-        this.$store.dispatch("showModal", {
-          persistent: true,
-          title: `You reviewed ${this.viewed} answers!`,
-          text:
-            "There is no available answers for review, please come back later.",
-          confirmBtn: {
-            text: "Leave",
-            color: "warning",
-            callback: () => this.$store.dispatch("logout")
-          },
-          cancelBtn: {
-            color: "success"
-          }
-        });
+        this.$root
+          .$modal({
+            persistent: true,
+            title: `You reviewed ${this.viewed} answers!`,
+            text:
+              "There is no available answers for review, please come back later.",
+            confirmBtn: {
+              text: "Leave",
+              color: "warning"
+            },
+            cancelBtn: {
+              color: "success"
+            }
+          })
+          .then(res => {
+            if (res) this.$store.dispatch("logout");
+          });
       }
     },
     confirm: function() {

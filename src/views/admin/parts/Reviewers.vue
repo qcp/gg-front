@@ -59,7 +59,11 @@
                 </c-bth-tip>
               </v-card-text>
               <v-card-text class="py-2">
-                <strong>Last login:</strong> unknow
+                <strong>Last login:</strong>
+                <span
+                  v-if="user.metadata.lastLogin"
+                >{{new Date(user.metadata.lastLogin).toLocaleString()}}</span>
+                <span v-else>unknown</span>
               </v-card-text>
             </v-card>
           </v-menu>
@@ -161,16 +165,40 @@
             :rules="[v => !!v || 'Url is required']"
             class="mx-2"
             label="Url"
+            @change="checkApi(api)"
           ></v-text-field>
-          <c-bth-tip
-            class="ml-2"
-            icon
-            :tooltip="`${api.metadata.available?'Available':'Not available'}`"
-            @click="checkApi(api)"
+          <v-menu
+            offset-y
+            bottom
+            auto
+            origin="center center"
+            transition="scale-transition"
+            :close-on-content-click="false"
           >
-            <v-icon v-if="api.metadata.available" color="green">mdi-code-tags-check</v-icon>
-            <v-icon v-else color="red">mdi-code-tags</v-icon>
-          </c-bth-tip>
+            <template v-slot:activator="{ on: menu }">
+              <v-tooltip bottom>
+                <template v-slot:activator="{ on: tooltip }">
+                  <v-btn class="ml-2" icon v-on="{ ...tooltip, ...menu}">
+                    <v-icon v-if="api.metadata.available" color="success">mdi-code-tags-check</v-icon>
+                    <v-icon v-else color="warning">mdi-code-tags</v-icon>
+                  </v-btn>
+                </template>
+                <span>Info</span>
+              </v-tooltip>
+            </template>
+            <v-card>
+              <v-card-text class="py-2">
+                <strong>Sysname:</strong>
+                <span v-if="api.metadata.name">{{api.metadata.name}}</span>
+                <span v-else>unknown</span>
+              </v-card-text>
+              <v-card-text class="py-2">
+                <strong>Description:</strong>
+                <span v-if="api.metadata.description">{{api.metadata.description}}</span>
+                <span v-else>unknown</span>
+              </v-card-text>
+            </v-card>
+          </v-menu>
           <c-bth-tip
             class="mr-2"
             icon
@@ -234,10 +262,11 @@ export default {
         })
         .then(res => {
           if (res.status != "OK") throw res.error;
-          this.$set(api.metadata, "available", true);
+          this.$set(api, "metadata", res.metadata);
+          api.name = !!api.name ? api.name : api.metadata.name;
         })
         .catch(err => {
-          this.$set(api.metadata, "available", false);
+          this.$set(api, "metadata", { available: false });
         });
     },
     exportExcelReviewers: function() {

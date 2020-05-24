@@ -1,3 +1,7 @@
+/**
+ * Deprecated?
+ */
+
 const state = {
     active: false,
     persistent: false,

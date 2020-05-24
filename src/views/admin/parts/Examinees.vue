@@ -59,7 +59,11 @@
                 </c-bth-tip>
               </v-card-text>
               <v-card-text class="py-2">
-                <strong>Last login:</strong> unknow
+                <strong>Last login:</strong>
+                <span
+                  v-if="examinee.metadata.lastLogin"
+                >{{new Date(examinee.metadata.lastLogin).toLocaleString()}}</span>
+                <span v-else>unknown</span>
               </v-card-text>
             </v-card>
           </v-menu>

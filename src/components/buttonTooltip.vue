@@ -9,6 +9,7 @@
         :large="large"
         :disabled="disabled"
         :class="handle?'handle':''"
+        :href="href"
         @click="click"
       >
         <slot></slot>
@@ -27,7 +28,8 @@ export default {
     handle: Boolean,
     tooltip: String,
     large: Boolean,
-    disabled: Boolean
+    disabled: Boolean,
+    href: String
   },
   methods: {
     click: function() {
