@@ -1,8 +1,5 @@
 <template>
   <div class="small-window">
-    <v-overlay :value="overlay">
-      <v-progress-circular indeterminate size="64"></v-progress-circular>
-    </v-overlay>
     <v-alert
       v-model="alert.show"
       transition="scale-transition"
@@ -32,7 +29,7 @@
             </v-card-text>
             <v-card-actions>
               <v-spacer />
-              <v-btn @click="$router.push('/login')">Back to login page</v-btn>
+              <v-btn @click="$router.push('login')">Back to login page</v-btn>
               <v-spacer />
             </v-card-actions>
           </v-card>
@@ -48,7 +45,7 @@
             </v-card-text>
             <v-card-actions>
               <v-spacer />
-              <v-btn @click="$router.push('/login')">Back to login page</v-btn>
+              <v-btn @click="$router.push('login')">Back to login page</v-btn>
               <v-btn
                 color="primary"
                 :disabled="!email.match(/\S+@\S+\.\S+/)"
@@ -71,7 +68,6 @@ export default {
       type: "error",
       text: ""
     },
-    overlay: false,
     tab: null,
     email: ""
   }),
@@ -86,7 +82,7 @@ export default {
       }
     },
     resendEmailSecret: function() {
-      this.overlay = true;
+      this.$root.$overlay.show();
       this.toggleAlert();
       this.$backCall("/resend-email-secret", "POST", {
         email: this.email
@@ -95,7 +91,7 @@ export default {
           this.toggleAlert(error);
         })
         .finally(() => {
-          this.overlay = false;
+          this.$root.$overlay.hide();
         });
     }
   },

@@ -34,7 +34,7 @@ export default {
   }),
   methods: {
     edit: function(item) {
-      this.$router.push({ name: "DeveloperBuilder", query: { _id: item._id } });
+      this.$router.push({ path: "builder", query: { _id: item._id } });
     }
   },
   beforeMount: function() {
@@ -51,5 +51,6 @@ export default {
 .custom {
   margin-top: -60px;
   z-index: 6;
+  width: 100%;
 }
 </style>

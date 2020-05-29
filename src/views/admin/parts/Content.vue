@@ -19,7 +19,9 @@
                 <v-tooltip bottom>
                   <template v-slot:activator="{ on: tooltip }">
                     <v-btn icon v-on="{ ...tooltip, ...menu}">
-                      <v-icon>mdi-file-presentation-box</v-icon>
+                      <v-badge color="warning" dot :value="!criteria.parameters.length">
+                        <v-icon>mdi-file-presentation-box</v-icon>
+                      </v-badge>
                     </v-btn>
                   </template>
                   <span>Parameters</span>
@@ -38,7 +40,7 @@
                           <v-text-field
                             v-model="parameter.name"
                             :rules="[v => !!v || 'Parameter name is required']"
-                            class="ml-3 mr-2"                            
+                            class="ml-3 mr-2"
                             label="Parameter short name"
                             dense
                           ></v-text-field>
@@ -77,12 +79,14 @@
                 </v-card-actions>
               </v-card>
             </v-dialog>
-            <v-dialog transition="slide-x-transition">
+            <v-dialog transition="slide-x-transition" max-width="800">
               <template v-slot:activator="{ on: menu }">
                 <v-tooltip bottom>
                   <template v-slot:activator="{ on: tooltip }">
                     <v-btn icon v-on="{ ...tooltip, ...menu}">
-                      <v-icon>mdi-account-multiple</v-icon>
+                      <v-badge color="warning" dot :value="!criteria.reviewerChain.length">
+                        <v-icon>mdi-account-multiple</v-icon>
+                      </v-badge>
                     </v-btn>
                   </template>
                   <span>Reviewers</span>
@@ -262,7 +266,7 @@ export default {
       this.$delete(chain, index);
     },
     addParameter: function(list) {
-      list.push({ });
+      list.push({});
     },
     removeParameter: function(list, index) {
       this.$delete(list, index);

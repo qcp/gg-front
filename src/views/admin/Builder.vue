@@ -199,5 +199,6 @@ export default {
 .custom {
   margin-top: -60px;
   z-index: 6;
+  width: 100%;
 }
 </style>

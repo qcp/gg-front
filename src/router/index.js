@@ -51,12 +51,12 @@ const routes = [
     children: [
       {
         path: "dashboard",
-        name: "DeveloperDashboard",
+        name: "Dashboard",
         component: () => import("../views/admin/Dashboard.vue")
       },
       {
         path: "builder",
-        name: "DeveloperBuilder",
+        name: "Inquirer builder",
         component: () => import("../views/admin/Builder.vue")
       }
     ],
@@ -71,7 +71,7 @@ const routes = [
     children: [
       {
         path: "viewer",
-        name: "ExamineeViewer",
+        name: "Inquirer",
         component: () => import("../views/examinee/Viewer.vue")
       }
     ],
@@ -86,7 +86,7 @@ const routes = [
     children: [
       {
         path: "viewer",
-        name: "ReviewerViewer",
+        name: "Estimator",
         component: () => import("../views/reviewer/Viewer.vue")
       }
     ],

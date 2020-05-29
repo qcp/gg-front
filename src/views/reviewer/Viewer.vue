@@ -1,65 +1,72 @@
 <template>
-  <div>
-    <div v-if="exist">
-      <v-card-subtitle v-if="current.content.decisionChain" class="pb-1">Previosly reviewers</v-card-subtitle>
-      <v-timeline v-if="current.content.decisionChain" dense>
-        <v-timeline-item
-          v-for="(decision, decisionIndex) in current.content.decisionChain"
-          :key="decisionIndex"
-          color="grey lighten-5"
-        >
-          <template v-slot:icon>
-            <v-badge color="pink darken-1" :content="decision.step+1">
-              <v-icon
-                class="ma-0"
-                :color="decision.reviewer.type == 'api' ? 'lime' : decision.reviewer.type == 'group' ? 'teal' : 'cyan'"
-              >{{decision.reviewer.type == 'api' ? 'mdi-robot' : decision.reviewer.type == 'group' ? 'mdi-account-multiple' : 'mdi-account' }}</v-icon>
-            </v-badge>
-          </template>
-          <v-card>
-            <v-card-title dense class="pa-2">{{decision.pretty}}</v-card-title>
-            <v-card-subtitle dense class="pa-2">
-              {{new Date(decision.date).toLocaleString()}}:
-              <b>{{decision.reviewer.name}}</b>
-            </v-card-subtitle>
-            <v-divider />
-            <v-card-text dense class="pa-2">{{decision.comment}}</v-card-text>
-          </v-card>
-        </v-timeline-item>
-      </v-timeline>
+  <div style="width: 100%">
+    <v-expansion-panels v-if="exist" popout multiple :value="panels">
+      <v-expansion-panel v-if="current.content.decisionChain">
+        <v-expansion-panel-header>Previosly reviewers</v-expansion-panel-header>
+        <v-expansion-panel-content>
+          <v-timeline v-if="current.content.decisionChain" dense>
+            <v-timeline-item
+              v-for="(decision, decisionIndex) in current.content.decisionChain"
+              :key="decisionIndex"
+              color="grey lighten-5"
+            >
+              <template v-slot:icon>
+                <v-badge color="pink darken-1" :content="decision.step+1">
+                  <v-icon
+                    class="ma-0"
+                    :color="decision.reviewer.type == 'api' ? 'lime' : decision.reviewer.type == 'group' ? 'teal' : 'cyan'"
+                  >{{decision.reviewer.type == 'api' ? 'mdi-robot' : decision.reviewer.type == 'group' ? 'mdi-account-multiple' : 'mdi-account' }}</v-icon>
+                </v-badge>
+              </template>
+              <v-card>
+                <v-card-title dense class="pa-2">{{decision.pretty}}</v-card-title>
+                <v-card-subtitle dense class="pa-2">
+                  {{new Date(decision.date).toLocaleString()}}:
+                  <b>{{decision.reviewer.name}}</b>
+                </v-card-subtitle>
+                <v-divider />
+                <v-card-text dense class="pa-2">{{decision.comment}}</v-card-text>
+              </v-card>
+            </v-timeline-item>
+          </v-timeline>
+        </v-expansion-panel-content>
+      </v-expansion-panel>
 
-      <v-card-subtitle class="pb-1">Answer</v-card-subtitle>
-      <v-card>
-        <component
-          :is="current.template"
-          :settings="current.content.settings"
-          :examinee="current.examinee"
-          :answer="current.content.answer"
-        ></component>
-      </v-card>
-
-      <v-card-subtitle class="pb-1">You decision</v-card-subtitle>
-      <v-card>
-        <v-list>
-          <v-list-item
-            v-for="(parameter, parameterIndex) in current.content.parameters"
-            :key="parameterIndex"
-            class="d-flex align-center"
-          >
-            <span class="subtitle-1 parameter-name mr-2">{{parameter.description}}:</span>
-            <v-text-field
-              v-model="current.decision.parameters[parameterIndex].value"
-              :prefix="parameter.name + ' = '"
-            ></v-text-field>
-            <c-bth-tip dense icon :tooltip="parameter.hint">
-              <v-icon>mdi-information-outline</v-icon>
-            </c-bth-tip>
-          </v-list-item>
-        </v-list>
-        <v-card-text class="py-0">
-          <v-textarea v-model="current.decision.comment" rows="3" label="Commment"></v-textarea>
-        </v-card-text>
-      </v-card>
+      <v-expansion-panel>
+        <v-expansion-panel-header>Answer</v-expansion-panel-header>
+        <v-expansion-panel-content>
+          <component
+            :is="current.template"
+            :settings="current.content.settings"
+            :examinee="current.examinee"
+            :answer="current.content.answer"
+          ></component>
+        </v-expansion-panel-content>
+      </v-expansion-panel>
+      <v-expansion-panel>
+        <v-expansion-panel-header>You decision</v-expansion-panel-header>
+        <v-expansion-panel-content>
+          <v-list>
+            <v-list-item
+              v-for="(parameter, parameterIndex) in current.content.parameters"
+              :key="parameterIndex"
+              class="d-flex align-center"
+            >
+              <span class="subtitle-1 parameter-name mr-2">{{parameter.description}}:</span>
+              <v-text-field
+                v-model="current.decision.parameters[parameterIndex].value"
+                :prefix="parameter.name + ' = '"
+              ></v-text-field>
+              <c-bth-tip dense icon :tooltip="parameter.hint">
+                <v-icon>mdi-information-outline</v-icon>
+              </c-bth-tip>
+            </v-list-item>
+          </v-list>
+          <v-card-text class="py-0">
+            <v-textarea v-model="current.decision.comment" rows="3" label="Commment"></v-textarea>
+          </v-card-text>
+        </v-expansion-panel-content>
+      </v-expansion-panel>
       <v-row class="mt-4">
         <v-spacer />
         <v-btn @click="next">Skip</v-btn>
@@ -67,7 +74,7 @@
         <v-btn @click="confirm" color="primary">Сonfirm</v-btn>
         <v-spacer />
       </v-row>
-    </div>
+    </v-expansion-panels>
     <v-overlay v-else-if="loading">
       <v-progress-circular indeterminate size="64"></v-progress-circular>
     </v-overlay>
@@ -87,6 +94,7 @@ export default {
     viewed: 0,
     all: 0,
     answersGen: {},
+    panels: [],
 
     exist: false,
     current: {
@@ -167,6 +175,7 @@ export default {
       const next = this.answersGen.next();
       if (next.value) {
         this.current = next.value;
+        this.panels = [0, 1, 2];
       }
 
       if (next.done && !isFirstLoad) {

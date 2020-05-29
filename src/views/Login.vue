@@ -1,8 +1,5 @@
 <template>
   <v-layout wrap align-center justify-center>
-    <v-overlay :value="overlay">
-      <v-progress-circular indeterminate size="64"></v-progress-circular>
-    </v-overlay>
     <v-alert
       v-model="alert.show"
       transition="scale-transition"
@@ -34,7 +31,7 @@
                   auto-grow
                   rows="1"
                   append-icon="mdi-comment-question"
-                  @click:append="$router.push('/questions')"
+                  @click:append="$router.push('questions')"
                 ></v-textarea>
               </v-card-text>
               <v-card-actions>
@@ -73,7 +70,6 @@ export default {
       type: "error",
       text: ""
     },
-    overlay: false,
     valid: true,
     tab: null,
     emailSecret: ""
@@ -90,27 +86,28 @@ export default {
     },
     onLoginAtempt: function() {
       if (this.$refs.form.validate()) {
-        this.overlay = true;
+        console.log(this.$root.$overlay)
+        this.$root.$overlay.show();
         this.toggleAlert();
         this.$store
           .dispatch(
             "login",
             this.emailSecret
           )
-          .then(res => this.$router.push(`/${res.role[0]}`))
+          .then(res => this.$router.push(`${res.role[0]}`))
           .catch(error => this.toggleAlert(error))
-          .finally(() => (this.overlay = false));
+          .finally(() => (this.$root.$overlay.hide()));
       }
     },
     onGooglePopup: function() {
-      this.overlay = true;
+      this.$root.$overlay.show();
       this.toggleAlert();
       this.$backCall("/google/url", "GET")
         .then(res => {
           window.location.href = res.url;
         })
         .catch(error => this.toggleAlert(error))
-        .finally(() => (this.overlay = false));
+        .finally(() => (this.$root.$overlay.hide()));
     }
   },
   watch: {
@@ -121,15 +118,11 @@ export default {
   mounted: function() {
     this.emailSecret = this.$route.query.secret || "";
     if (this.emailSecret) {
-      this.onLoginAtempt();
+      setTimeout(() => this.onLoginAtempt(), 500);
     }
   }
 };
 </script>
 
 <style scoped>
-.small-window {
-  max-width: 600px;
-  margin: auto;
-}
 </style>
