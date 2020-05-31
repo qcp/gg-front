@@ -84,15 +84,15 @@ export default {
     resendEmailSecret: function() {
       this.$root.$overlay.show();
       this.toggleAlert();
-      this.$backCall("/resend-email-secret", "POST", {
-        email: this.email
-      })
-        .catch(error => {
-          this.toggleAlert(error);
-        })
-        .finally(() => {
-          this.$root.$overlay.hide();
-        });
+      // this.$backCall("/resend-email-secret", "POST", {
+      //   email: this.email
+      // })
+      //   .catch(error => {
+      //     this.toggleAlert(error);
+      //   })
+      //   .finally(() => {
+      //     this.$root.$overlay.hide();
+      //   });
     }
   },
   watch: {

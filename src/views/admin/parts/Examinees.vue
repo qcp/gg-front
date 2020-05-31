@@ -1,7 +1,7 @@
 <template>
   <v-card flat>
-    <v-card-title class="sticky">
-      Examinees
+    <v-toolbar flat class="sticky">
+      <v-toolbar-title>Examinees</v-toolbar-title>
       <v-spacer />
       <c-bth-tip icon tooltip="Export excel" @click="exportExcel">
         <v-icon color="green darken-2">mdi-file-export</v-icon>
@@ -15,7 +15,7 @@
       <c-bth-tip icon tooltip="Add new examinee" @click="addToList(examinees)">
         <v-icon>mdi-plus-circle-outline</v-icon>
       </c-bth-tip>
-    </v-card-title>
+    </v-toolbar>
 
     <v-list class="mt-n4">
       <v-list-item class="my-4 align-start" v-for="(examinee) in examinees" :key="examinee._id">
@@ -146,15 +146,4 @@ export default {
 </script>
 
 <style>
-.sticky {
-  position: sticky;
-  top: 0;
-  z-index: 1;
-  background: linear-gradient(
-    180deg,
-    rgba(255, 255, 255, 1) 0%,
-    rgba(255, 255, 255, 1) 80%,
-    rgba(255, 255, 255, 0) 100%
-  );
-}
 </style>

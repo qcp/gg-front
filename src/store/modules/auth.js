@@ -17,7 +17,7 @@ function parseJwt(token) {
 
 const state = {
     user: null,
-    token: localStorage.getItem("user-token")
+    token: sessionStorage.getItem("user-token")
 };
 const mutations = {
     loginAttempt: (state, { token }) => {
@@ -40,7 +40,7 @@ const actions = {
     login: ({ commit }, token) => {
         return new Promise((resolve, reject) => {
             commit("loginAttempt", { token: token });
-            localStorage.setItem("user-token", token);
+            sessionStorage.setItem("user-token", token);
             Vue.backCall('/signin', "POST").then(res => {
                 commit("loginSuccess", { user: res.user });
                 resolve(res.user);
@@ -51,7 +51,7 @@ const actions = {
         });
     },
     logout: ({ commit }) => {
-        localStorage.removeItem("user-token");
+        sessionStorage.removeItem("user-token");
         commit("logout");
         router.push("/login");
     }

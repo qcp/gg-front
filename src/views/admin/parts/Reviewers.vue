@@ -1,7 +1,8 @@
 <template>
   <v-card flat>
-    <v-card-title class="sticky">
-      <v-icon color="cyan" class="mr-2">mdi-account</v-icon>Reviewers
+    <v-toolbar flat class="sticky">
+      <v-icon color="cyan" class="mr-2">mdi-account</v-icon>
+      <v-toolbar-title>Reviewers</v-toolbar-title>
       <v-spacer />
       <c-bth-tip icon tooltip="Export excel" @click="exportExcelReviewers">
         <v-icon color="green darken-2">mdi-file-export</v-icon>
@@ -15,7 +16,7 @@
       <c-bth-tip icon tooltip="Add new reviewer" @click="addToList(reviewers.users)">
         <v-icon>mdi-plus-circle-outline</v-icon>
       </c-bth-tip>
-    </v-card-title>
+    </v-toolbar>
 
     <v-list class="mt-n4">
       <v-list-item class="my-4 align-start" v-for="(user) in reviewers.users" :key="user._id">
@@ -82,13 +83,14 @@
 
     <v-divider />
 
-    <v-card-title class="sticky">
-      <v-icon color="teal" class="mr-2">mdi-account-multiple</v-icon>Groups
+    <v-toolbar flat class="sticky">
+      <v-icon color="teal" class="mr-2">mdi-account-multiple</v-icon>
+      <v-toolbar-title>Groups</v-toolbar-title>
       <v-spacer />
       <c-bth-tip icon tooltip="Add new group" @click="addToList(reviewers.groups)">
         <v-icon>mdi-plus-circle-outline</v-icon>
       </c-bth-tip>
-    </v-card-title>
+    </v-toolbar>
 
     <v-list class="mt-n4">
       <v-list-item class="my-4 align-start" v-for="(group) in reviewers.groups" :key="group._id">
@@ -137,8 +139,9 @@
 
     <v-divider />
 
-    <v-card-title class="sticky">
-      <v-icon color="lime" class="mr-2">mdi-robot</v-icon>Auto tests
+    <v-toolbar flat class="sticky">
+      <v-icon color="lime" class="mr-2">mdi-robot</v-icon>
+      <v-toolbar-title>Auto tests</v-toolbar-title>
       <v-spacer />
       <c-bth-tip icon tooltip="Export excel" @click="exportExcelApis">
         <v-icon color="green darken-2">mdi-file-export</v-icon>
@@ -149,7 +152,7 @@
       <c-bth-tip icon tooltip="Add new auto test" @click="addToList(reviewers.apis)">
         <v-icon>mdi-plus-circle-outline</v-icon>
       </c-bth-tip>
-    </v-card-title>
+    </v-toolbar>
 
     <v-list class="mt-n4">
       <v-list-item class="my-4 align-start" v-for="(api) in reviewers.apis" :key="api._id">
@@ -310,15 +313,4 @@ export default {
 </script>
 
 <style>
-.sticky {
-  position: sticky;
-  top: 0;
-  z-index: 1;
-  background: linear-gradient(
-    180deg,
-    rgba(255, 255, 255, 1) 0%,
-    rgba(255, 255, 255, 1) 80%,
-    rgba(255, 255, 255, 0) 100%
-  );
-}
 </style>

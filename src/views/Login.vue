@@ -1,13 +1,5 @@
 <template>
   <v-layout wrap align-center justify-center>
-    <v-alert
-      v-model="alert.show"
-      transition="scale-transition"
-      dense
-      outlined
-      :type="alert.type"
-    >{{alert.text}}</v-alert>
-
     <v-form v-model="valid" ref="form">
       <v-card>
         <v-tabs v-model="tab" grow>
@@ -65,54 +57,47 @@ import config from "@/config";
 
 export default {
   data: () => ({
-    alert: {
-      show: false,
-      type: "error",
-      text: ""
-    },
     valid: true,
     tab: null,
     emailSecret: ""
   }),
   methods: {
-    toggleAlert: function(text, type) {
-      if (text) {
-        this.alert.text = text;
-        this.alert.type = type || "error";
-        this.alert.show = true;
-      } else {
-        this.alert.show = false;
-      }
-    },
     onLoginAtempt: function() {
       if (this.$refs.form.validate()) {
-        console.log(this.$root.$overlay)
         this.$root.$overlay.show();
-        this.toggleAlert();
         this.$store
-          .dispatch(
-            "login",
-            this.emailSecret
-          )
+          .dispatch("login", this.emailSecret)
           .then(res => this.$router.push(`${res.role[0]}`))
-          .catch(error => this.toggleAlert(error))
-          .finally(() => (this.$root.$overlay.hide()));
+          .catch(error => {
+            this.$root.$modal({
+              width: 400,
+              title: "Error",
+              message: error,
+              cancelBtn: {
+                text: "OK"
+              }
+            });
+          })
+          .finally(() => this.$root.$overlay.hide());
       }
     },
     onGooglePopup: function() {
       this.$root.$overlay.show();
-      this.toggleAlert();
       this.$backCall("/google/url", "GET")
         .then(res => {
           window.location.href = res.url;
         })
-        .catch(error => this.toggleAlert(error))
-        .finally(() => (this.$root.$overlay.hide()));
-    }
-  },
-  watch: {
-    tab: function() {
-      this.toggleAlert();
+        .catch(error => {
+          this.$root.$modal({
+            width: 400,
+            title: "Error",
+            message: error,
+            cancelBtn: {
+              text: "OK"
+            }
+          });
+        })
+        .finally(() => this.$root.$overlay.hide());
     }
   },
   mounted: function() {

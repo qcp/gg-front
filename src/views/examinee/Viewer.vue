@@ -99,7 +99,8 @@ export default {
 </script>
 
 <style scoped>
-.theme--light.v-list.background-light {
+.theme--light.v-list.background-light,
+.theme--dark.v-list.background-light {
   background: transparent;
 }
 .custom {

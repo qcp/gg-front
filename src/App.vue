@@ -3,9 +3,45 @@
     <v-app-bar v-if="$store.getters.user" app dark color="primary" extended collapse-on-scroll>
       <v-toolbar-title>{{$route.name}}</v-toolbar-title>
       <v-spacer></v-spacer>
+      <div class="hide_on_collapse">
+        <v-menu
+          offset-y
+          origin="center center"
+          transition="scale-transition"
+          :close-on-content-click="false"
+        >
+          <template v-slot:activator="{ on }">
+            <v-btn v-on="on" icon>
+              <v-icon>mdi-cog</v-icon>
+            </v-btn>
+          </template>
+          <v-list dense>
+            <v-list-item>
+              <v-switch
+                v-model="$vuetify.theme.dark"
+                label="Dark theme"
+                prepend-icon="mdi-theme-light-dark"
+              ></v-switch>
+            </v-list-item>
+            <v-divider></v-divider>
+            <v-list-item>
+              <v-select
+                value="English"
+                label="Language"
+                single-line
+                hide-selected
+                no-data-text="No other language available"
+                :items="['English']"
+                prepend-icon="mdi-translate"
+              ></v-select>
+            </v-list-item>
+          </v-list>
+        </v-menu>
+      </div>
       <c-bth-tip icon tooltip="Help" href="https://github.com/qcp/gg-common">
         <v-icon>mdi-help-circle-outline</v-icon>
       </c-bth-tip>
+      <v-divider vertical></v-divider>
       <c-bth-tip icon tooltip="Exit" @click="$store.dispatch('logout')">
         <v-icon>mdi-exit-run</v-icon>
       </c-bth-tip>
@@ -36,8 +72,8 @@ export default {
   mounted: function() {
     this.$root.$modal = this.$refs.modal.open;
     this.$root.$overlay = {
-      show: () => this.overlay = true,
-      hide: () => this.overlay = false
+      show: () => (this.overlay = true),
+      hide: () => (this.overlay = false)
     };
   }
 };
@@ -46,6 +82,9 @@ export default {
 <style>
 .theme--light.v-application {
   background: #fafafa !important;
+}
+.v-toolbar.v-toolbar--collapsed .hide_on_collapse {
+  display: none;
 }
 </style>
 

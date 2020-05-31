@@ -3,7 +3,7 @@
     <v-data-table :loading="loading" :headers="headers" :items="results">
       <template v-slot:top>
         <v-toolbar flat>
-          There are all examinees who already answered
+          <v-toolbar-title>There are all examinees who already answered</v-toolbar-title>
           <v-spacer />
           <c-bth-tip icon tooltip="Export excel" @click="exportExcel">
             <v-icon color="green darken-2">mdi-file-export</v-icon>

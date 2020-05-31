@@ -9,4 +9,9 @@ export default {};
 </script>
 
 <style>
+.sticky {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
 </style>
