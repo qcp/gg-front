@@ -149,6 +149,43 @@
       <c-bth-tip icon tooltip="Import excel" disabled>
         <v-icon color="green darken-2">mdi-file-import</v-icon>
       </c-bth-tip>
+      <v-dialog transition="slide-x-transition" max-width="800">
+        <template v-slot:activator="{ on: menu }">
+          <v-tooltip bottom>
+            <template v-slot:activator="{ on: tooltip }">
+              <v-btn icon v-on="{ ...tooltip, ...menu}" :disabled="!library.length">
+                <v-icon>mdi-plus-box-multiple-outline</v-icon>
+              </v-btn>
+            </template>
+            <span>Auto test library</span>
+          </v-tooltip>
+        </template>
+        <v-card class="py-3">
+          <v-simple-table fixed-header>
+            <template v-slot:default>
+              <thead>
+                <tr>
+                  <th class="text-left">Name</th>
+                  <th class="text-left">Description</th>
+                  <th />
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="item in library" :key="item.module">
+                  <td>{{ item.name }}</td>
+                  <td>{{ item.description }}</td>
+                  <td>
+                    <v-btn icon @click="addToListExtApi(item)" :disabled="!item.available">
+                      <v-icon v-if="item.available" color="success">mdi-plus-circle-outline</v-icon>
+                      <v-icon v-else color="warning">mdi-minus-circle-off-outline</v-icon>
+                    </v-btn>
+                  </td>
+                </tr>
+              </tbody>
+            </template>
+          </v-simple-table>
+        </v-card>
+      </v-dialog>
       <c-bth-tip icon tooltip="Add new auto test" @click="addToList(reviewers.apis)">
         <v-icon>mdi-plus-circle-outline</v-icon>
       </c-bth-tip>
@@ -217,6 +254,7 @@
 </template>
 
 <script>
+import config from "@/config";
 import excel from "@/plugins/excel";
 
 export default {
@@ -224,7 +262,9 @@ export default {
     value: Object,
     inquirerId: String
   },
-  data: () => ({}),
+  data: () => ({
+    library: []
+  }),
   computed: {
     reviewers: {
       get() {
@@ -236,6 +276,16 @@ export default {
     }
   },
   methods: {
+    addToListExtApi: function(data) {
+      let api = {
+        _id: this.$nextMongoId(),
+        name: data.name,
+        url: data.url,
+        metadata: {}
+      };
+      this.checkApi(api);
+      this.reviewers.apis.unshift(api);      
+    },
     addToList: function(list) {
       list.unshift({ _id: this.$nextMongoId(), metadata: {} });
     },
@@ -308,6 +358,22 @@ export default {
         this.reviewers.apis
       );
     }
+  },
+  mounted: function() {
+    fetch(`${config.apiEndpoint}/library`)
+      .then(res => {
+        if (!res.ok) throw res.statusText;
+        return res.json();
+      })
+      .then(res => {
+        if (res.status != "OK") throw res.error;
+        this.library = res.library.map(o => ({
+          name: o.name,
+          url: `${config.apiEndpoint}/${o.module}`,
+          description: o.description,
+          available: o.available
+        }));
+      });
   }
 };
 </script>
