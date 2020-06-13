@@ -11,9 +11,9 @@
             <component :is="criteria.template" v-model="criteria.settings"></component>
           </v-card>
           <v-card class="d-flex flex-column ml-4">
-            <c-bth-tip icon handle tooltip="Drag to change criteria order">
+            <c-btn-tip icon handle tooltip="Drag to change criteria order">
               <v-icon>mdi-drag</v-icon>
-            </c-bth-tip>
+            </c-btn-tip>
             <v-dialog transition="slide-x-transition" max-width="800">
               <template v-slot:activator="{ on: menu }">
                 <v-tooltip bottom>
@@ -51,14 +51,14 @@
                             label="Parameter description"
                             dense
                           ></v-text-field>
-                          <c-bth-tip
+                          <c-btn-tip
                             dense
                             icon
                             tooltip="Remove parameter"
                             @click="removeParameter(criteria.parameters, parameterIndex)"
                           >
                             <v-icon>mdi-delete</v-icon>
-                          </c-bth-tip>
+                          </c-btn-tip>
                         </v-row>
                         <v-textarea v-model="parameter.hint" label="Parameter hint" rows="3" dense></v-textarea>
                       </v-card-text>
@@ -67,14 +67,14 @@
                 </v-list>
                 <v-card-actions>
                   <v-spacer />
-                  <c-bth-tip
+                  <c-btn-tip
                     icon
                     large
                     tooltip="Add new parameter"
                     @click="addParameter(criteria.parameters)"
                   >
                     <v-icon>mdi-plus-circle-outline</v-icon>
-                  </c-bth-tip>
+                  </c-btn-tip>
                   <v-spacer />
                 </v-card-actions>
               </v-card>
@@ -138,38 +138,38 @@
                         </template>
                       </v-select>
 
-                      <c-bth-tip
+                      <c-btn-tip
                         dense
                         icon
                         tooltip="Remove chain link"
                         @click="removeChainLink(criteria.reviewerChain, chainLinkIndex)"
                       >
                         <v-icon>mdi-delete</v-icon>
-                      </c-bth-tip>
-                      <c-bth-tip dense icon handle tooltip="Drag to change chain link order">
+                      </c-btn-tip>
+                      <c-btn-tip dense icon handle tooltip="Drag to change chain link order">
                         <v-icon>mdi-drag</v-icon>
-                      </c-bth-tip>
+                      </c-btn-tip>
                     </v-list-item>
                   </draggable>
                 </v-list>
                 <v-card-actions>
                   <v-spacer />
-                  <c-bth-tip
+                  <c-btn-tip
                     icon
                     large
                     tooltip="Add new reviewer chain link"
                     @click="addChainLink(criteria.reviewerChain)"
                   >
                     <v-icon>mdi-plus-circle-outline</v-icon>
-                  </c-bth-tip>
+                  </c-btn-tip>
                   <v-spacer />
                 </v-card-actions>
               </v-card>
             </v-dialog>
             <v-divider />
-            <c-bth-tip icon tooltip="Remove" @click="removeCriteria(criteriaIndex)">
+            <c-btn-tip icon tooltip="Remove" @click="removeCriteria(criteriaIndex)">
               <v-icon>mdi-delete</v-icon>
-            </c-bth-tip>
+            </c-btn-tip>
           </v-card>
         </v-list-item>
       </draggable>
@@ -244,17 +244,19 @@ export default {
   },
   methods: {
     addCriteria: function(sysname) {
-      this.criterias.push({
-        _id: this.$nextMongoId(),
-        component: sysname,
-        settings: this.components
-          .find(o => o.sysname === sysname)
-          .defaultSettings(),
-        parameters: [],
-        reviewerChain: [],
-        template: this.components.find(o => o.sysname === sysname).admin
+      this.$nextMongoId().then(id => {
+        this.criterias.push({
+          _id: id,
+          component: sysname,
+          settings: this.components
+            .find(o => o.sysname === sysname)
+            .defaultSettings(),
+          parameters: [],
+          reviewerChain: [],
+          template: this.components.find(o => o.sysname === sysname).admin
+        });
+        this.$refs.addCriteriaSelect.lazyValue = "";
       });
-      this.$refs.addCriteriaSelect.lazyValue = "";
     },
     removeCriteria: function(index) {
       this.$delete(this.criterias, index);

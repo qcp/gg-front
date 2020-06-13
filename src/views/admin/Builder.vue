@@ -23,7 +23,7 @@
     </div>
 
     <v-card flat :disabled="loading">
-      <v-tabs v-model="tab" grow center-active show-arrows>
+      <v-tabs v-model="tab" grow center-active show-arrows="mobile">
         <v-tab key="general">General</v-tab>
         <v-tab key="content">Content</v-tab>
         <v-tab key="examinees">Examinees</v-tab>
@@ -182,11 +182,11 @@ export default {
     }
   },
   beforeMount: function() {
-    this.$loadMongoIdList().then(() => {
+    this.$nextMongoId().then((id) => {
       if (this.$route.query._id) {
         this.load(this.$route.query._id).then(() => (this.loading = false));
       } else {
-        this.inquirer._id = this.$nextMongoId();
+        this.inquirer._id = id;
         this.inquirer.metadata.createUserId = this.$store.getters.user._id;
         this.loading = false;
       }

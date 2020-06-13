@@ -4,18 +4,23 @@
       <v-icon color="cyan" class="mr-2">mdi-account</v-icon>
       <v-toolbar-title>Reviewers</v-toolbar-title>
       <v-spacer />
-      <c-bth-tip icon tooltip="Export excel" @click="exportExcelReviewers">
+      <c-btn-tip icon tooltip="Export excel" @click="exportExcelReviewers">
         <v-icon color="green darken-2">mdi-file-export</v-icon>
-      </c-bth-tip>
-      <c-bth-tip icon tooltip="Import excel" disabled>
+      </c-btn-tip>
+      <c-btn-upload
+        icon
+        tooltip="Import excel"
+        accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+        @select="importExcelReviewers"
+      >
         <v-icon color="green darken-2">mdi-file-import</v-icon>
-      </c-bth-tip>
-      <c-bth-tip icon tooltip="Send email to all" disabled>
+      </c-btn-upload>
+      <c-btn-tip icon tooltip="Send email to all" disabled>
         <v-icon>mdi-gmail</v-icon>
-      </c-bth-tip>
-      <c-bth-tip icon tooltip="Add new reviewer" @click="addToList(reviewers.users)">
+      </c-btn-tip>
+      <c-btn-tip icon tooltip="Add new reviewer" @click="addToList(reviewers.users)">
         <v-icon>mdi-plus-circle-outline</v-icon>
-      </c-bth-tip>
+      </c-btn-tip>
     </v-toolbar>
 
     <v-list class="mt-n4">
@@ -55,9 +60,9 @@
               <v-card-text class="py-2">
                 <strong>Email:</strong>
                 <span>{{`${user.metadata.emailSended?'sended':'not sended'}`}}</span>
-                <c-bth-tip icon tooltip="Resend email" @click="sendMail(user)">
+                <c-btn-tip icon tooltip="Resend email" @click="sendMail(user)">
                   <v-icon>mdi-gmail</v-icon>
-                </c-bth-tip>
+                </c-btn-tip>
               </v-card-text>
               <v-card-text class="py-2">
                 <strong>Last login:</strong>
@@ -69,14 +74,14 @@
             </v-card>
           </v-menu>
 
-          <c-bth-tip
+          <c-btn-tip
             class="mr-2"
             icon
             tooltip="Remove reviewer"
             @click="removeFromList(reviewers.users, user._id)"
           >
             <v-icon>mdi-delete</v-icon>
-          </c-bth-tip>
+          </c-btn-tip>
         </v-card>
       </v-list-item>
     </v-list>
@@ -87,9 +92,9 @@
       <v-icon color="teal" class="mr-2">mdi-account-multiple</v-icon>
       <v-toolbar-title>Groups</v-toolbar-title>
       <v-spacer />
-      <c-bth-tip icon tooltip="Add new group" @click="addToList(reviewers.groups)">
+      <c-btn-tip icon tooltip="Add new group" @click="addToList(reviewers.groups)">
         <v-icon>mdi-plus-circle-outline</v-icon>
-      </c-bth-tip>
+      </c-btn-tip>
     </v-toolbar>
 
     <v-list class="mt-n4">
@@ -103,14 +108,14 @@
               label="Name"
             ></v-text-field>
 
-            <c-bth-tip
+            <c-btn-tip
               class="mr-2"
               icon
               tooltip="Remove group"
               @click="removeFromList(reviewers.groups, group._id)"
             >
               <v-icon>mdi-delete</v-icon>
-            </c-bth-tip>
+            </c-btn-tip>
           </div>
           <v-select
             v-model="group.reviewers"
@@ -143,12 +148,17 @@
       <v-icon color="lime" class="mr-2">mdi-robot</v-icon>
       <v-toolbar-title>Auto tests</v-toolbar-title>
       <v-spacer />
-      <c-bth-tip icon tooltip="Export excel" @click="exportExcelApis">
+      <c-btn-tip icon tooltip="Export excel" @click="exportExcelApis">
         <v-icon color="green darken-2">mdi-file-export</v-icon>
-      </c-bth-tip>
-      <c-bth-tip icon tooltip="Import excel" disabled>
+      </c-btn-tip>
+      <c-btn-upload
+        icon
+        tooltip="Import excel"
+        accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+        @select="importExcelApis"
+      >
         <v-icon color="green darken-2">mdi-file-import</v-icon>
-      </c-bth-tip>
+      </c-btn-upload>
       <v-dialog transition="slide-x-transition" max-width="800">
         <template v-slot:activator="{ on: menu }">
           <v-tooltip bottom>
@@ -186,9 +196,9 @@
           </v-simple-table>
         </v-card>
       </v-dialog>
-      <c-bth-tip icon tooltip="Add new auto test" @click="addToList(reviewers.apis)">
+      <c-btn-tip icon tooltip="Add new auto test" @click="addToList(reviewers.apis)">
         <v-icon>mdi-plus-circle-outline</v-icon>
-      </c-bth-tip>
+      </c-btn-tip>
     </v-toolbar>
 
     <v-list class="mt-n4">
@@ -239,14 +249,14 @@
               </v-card-text>
             </v-card>
           </v-menu>
-          <c-bth-tip
+          <c-btn-tip
             class="mr-2"
             icon
             tooltip="Remove auto tesr"
             @click="removeFromList(reviewers.apis, api._id)"
           >
             <v-icon>mdi-delete</v-icon>
-          </c-bth-tip>
+          </c-btn-tip>
         </v-card>
       </v-list-item>
     </v-list>
@@ -277,17 +287,21 @@ export default {
   },
   methods: {
     addToListExtApi: function(data) {
-      let api = {
-        _id: this.$nextMongoId(),
-        name: data.name,
-        url: data.url,
-        metadata: {}
-      };
-      this.checkApi(api);
-      this.reviewers.apis.unshift(api);      
+      this.$nextMongoId().then(id => {
+        let api = {
+          _id: id,
+          name: data.name,
+          url: data.url,
+          metadata: {}
+        };
+        this.checkApi(api);
+        this.reviewers.apis.unshift(api);
+      });
     },
     addToList: function(list) {
-      list.unshift({ _id: this.$nextMongoId(), metadata: {} });
+      this.$nextMongoId().then(id => {
+        list.unshift({ _id: id, metadata: {} });
+      });
     },
     removeFromList: function(list, key) {
       this.$delete(
@@ -340,6 +354,20 @@ export default {
         this.reviewers.users
       );
     },
+    importExcelReviewers: function(event) {
+      excel.import(event.target.files[0], true).then(table => {
+        table.forEach(user => {
+          this.$nextMongoId().then(id => {
+            this.reviewers.users.push({
+              _id: id,
+              name: user["Name"],
+              email: user["Email"],
+              metadata: {}
+            });
+          });
+        });
+      });
+    },
     exportExcelApis: function() {
       excel.export(
         "Apis",
@@ -357,6 +385,22 @@ export default {
         ],
         this.reviewers.apis
       );
+    },
+    importExcelApis: function(event) {
+      excel.import(event.target.files[0], true).then(table => {
+        table.forEach(api => {
+          this.$nextMongoId().then(id => {
+            let obj = {
+              _id: id,
+              name: api["Name"],
+              url: api["Url"],
+              metadata: {}
+            };
+            this.checkApi(obj);
+            this.reviewers.apis.push(obj);
+          });
+        });
+      });
     }
   },
   mounted: function() {

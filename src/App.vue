@@ -38,19 +38,19 @@
           </v-list>
         </v-menu>
       </div>
-      <c-bth-tip icon tooltip="Help" href="https://github.com/qcp/gg-common">
+      <c-btn-tip icon tooltip="Help" href="https://github.com/qcp/gg-common">
         <v-icon>mdi-help-circle-outline</v-icon>
-      </c-bth-tip>
+      </c-btn-tip>
       <v-divider vertical></v-divider>
-      <c-bth-tip icon tooltip="Exit" @click="$store.dispatch('logout')">
+      <c-btn-tip icon tooltip="Exit" @click="$store.dispatch('logout')">
         <v-icon>mdi-exit-run</v-icon>
-      </c-bth-tip>
+      </c-btn-tip>
     </v-app-bar>
-    <v-content>
+    <v-main>
       <v-container fill-height style="max-width:1000px">
         <router-view />
       </v-container>
-    </v-content>
+    </v-main>
     <c-modal ref="modal"></c-modal>
     <v-overlay :value="overlay" z-index="8">
       <v-progress-circular indeterminate size="64"></v-progress-circular>

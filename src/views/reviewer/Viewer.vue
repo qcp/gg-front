@@ -57,9 +57,9 @@
                 v-model="current.decision.parameters[parameterIndex].value"
                 :prefix="parameter.name + ' = '"
               ></v-text-field>
-              <c-bth-tip dense icon :tooltip="parameter.hint">
+              <c-btn-tip dense icon :tooltip="parameter.hint">
                 <v-icon>mdi-information-outline</v-icon>
-              </c-bth-tip>
+              </c-btn-tip>
             </v-list-item>
           </v-list>
           <v-card-text class="py-0">

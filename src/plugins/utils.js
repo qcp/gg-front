@@ -50,18 +50,15 @@ function backDownloadFile(id, name) {
 }
 
 const mongoIdList = [];
-function loadMongoIdList() {
-  return backCall("/utils/idList", "GET").then(res => mongoIdList.push(...res.idList));
-}
-function nextMongoId() {
-  if (mongoIdList.length < 3)
-    loadMongoIdList();
-  return mongoIdList.pop();
+async function nextMongoId() {
+    if(!mongoIdList.length){
+      await backCall("/utils/idList", "GET").then(res => mongoIdList.push(...res.idList))
+    }
+    return mongoIdList.pop();
 }
 
 export default {
   install(Vue, options) {
-    Vue.prototype.$loadMongoIdList = loadMongoIdList
     Vue.prototype.$nextMongoId = nextMongoId
 
     Vue.prototype.$backCall = backCall

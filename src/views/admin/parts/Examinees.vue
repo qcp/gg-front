@@ -3,18 +3,23 @@
     <v-toolbar flat class="sticky">
       <v-toolbar-title>Examinees</v-toolbar-title>
       <v-spacer />
-      <c-bth-tip icon tooltip="Export excel" @click="exportExcel">
+      <c-btn-tip icon tooltip="Export excel" @click="exportExcel">
         <v-icon color="green darken-2">mdi-file-export</v-icon>
-      </c-bth-tip>
-      <c-bth-tip icon tooltip="Import excel" disabled>
+      </c-btn-tip>
+      <c-btn-upload
+        icon
+        tooltip="Import excel"
+        accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+        @select="importExcel"
+      >
         <v-icon color="green darken-2">mdi-file-import</v-icon>
-      </c-bth-tip>
-      <c-bth-tip icon tooltip="Send email to all" disabled>
+      </c-btn-upload>
+      <c-btn-tip icon tooltip="Send email to all" disabled>
         <v-icon>mdi-gmail</v-icon>
-      </c-bth-tip>
-      <c-bth-tip icon tooltip="Add new examinee" @click="addToList(examinees)">
+      </c-btn-tip>
+      <c-btn-tip icon tooltip="Add new examinee" @click="addToList(examinees)">
         <v-icon>mdi-plus-circle-outline</v-icon>
-      </c-bth-tip>
+      </c-btn-tip>
     </v-toolbar>
 
     <v-list class="mt-n4">
@@ -54,9 +59,9 @@
               <v-card-text class="py-2">
                 <strong>Email:</strong>
                 <span>{{`${examinee.metadata.emailSended?'sended':'not sended'}`}}</span>
-                <c-bth-tip icon tooltip="Resend email" @click="sendMail(examinee)">
+                <c-btn-tip icon tooltip="Resend email" @click="sendMail(examinee)">
                   <v-icon>mdi-gmail</v-icon>
-                </c-bth-tip>
+                </c-btn-tip>
               </v-card-text>
               <v-card-text class="py-2">
                 <strong>Last login:</strong>
@@ -68,14 +73,14 @@
             </v-card>
           </v-menu>
 
-          <c-bth-tip
+          <c-btn-tip
             class="mr-2"
             icon
             tooltip="Remove examinee"
             @click="removeFromList(examinees, examinee._id)"
           >
             <v-icon>mdi-delete</v-icon>
-          </c-bth-tip>
+          </c-btn-tip>
         </v-card>
       </v-list-item>
     </v-list>
@@ -103,7 +108,9 @@ export default {
   },
   methods: {
     addToList: function(list) {
-      list.unshift({ _id: this.$nextMongoId(), metadata: {} });
+      this.$nextMongoId().then(id => {
+        list.unshift({ _id: id, metadata: {} });
+      });
     },
     removeFromList: function(list, key) {
       this.$delete(
@@ -140,6 +147,20 @@ export default {
         ],
         this.examinees
       );
+    },
+    importExcel: function(event) {
+      excel.import(event.target.files[0], true).then(table => {
+        table.forEach(user => {
+          this.$nextMongoId().then(id => {
+            this.examinees.push({
+              _id: id,
+              name: user["Name"],
+              email: user["Email"],
+              metadata: {}
+            });
+          });
+        });
+      });
     }
   }
 };

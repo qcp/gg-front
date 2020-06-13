@@ -3,13 +3,8 @@
     <template v-slot:activator="{ on }">
       <v-btn
         v-on="on"
-        :dense="dense"
-        :icon="icon"
-        :loading="loading"
-        :large="large"
-        :disabled="disabled"
-        :class="handle?'handle':''"
-        :href="href"
+        v-bind="$attrs"
+        :class="handle ? 'handle' : ''"
         @click="click"
       >
         <slot></slot>
@@ -22,14 +17,8 @@
 <script>
 export default {
   props: {
-    dense: Boolean,
-    icon: Boolean,
-    loading: Boolean,
     handle: Boolean,
     tooltip: String,
-    large: Boolean,
-    disabled: Boolean,
-    href: String
   },
   methods: {
     click: function() {

@@ -17,6 +17,36 @@ function exportExcel(name, headers, content) {
         });
 }
 
+function importExcel(file, hadHeaders) {
+    return new Promise(async (resolve, reject) => {
+        try {
+            let workbook = new Workbook();
+            await workbook.xlsx.load(await new Response(file).arrayBuffer());
+            let table = [];
+            let headers = [];
+            const worksheet = workbook.getWorksheet(1);
+            worksheet.eachRow((row, rowNumber) => {
+                if (hadHeaders && rowNumber === 1) {
+                    headers = row.values;
+                    return;
+                }
+                let entry = {};
+                for (let i = 0; i < row.values.length; i++) {
+                    entry[hadHeaders ? headers[i] : i.toString()] = row.values[i];
+                }
+                table.push(entry);
+            });
+
+            resolve(table);
+        }
+        catch (err) {
+            reject(err);
+        }
+
+    });
+}
+
 export default {
-    export: exportExcel
+    export: exportExcel,
+    import: importExcel
 }

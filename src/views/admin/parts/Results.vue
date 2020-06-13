@@ -5,12 +5,12 @@
         <v-toolbar flat>
           <v-toolbar-title>There are all examinees who already answered</v-toolbar-title>
           <v-spacer />
-          <c-bth-tip icon tooltip="Export excel" @click="exportExcel">
+          <c-btn-tip icon tooltip="Export excel" @click="exportExcel">
             <v-icon color="green darken-2">mdi-file-export</v-icon>
-          </c-bth-tip>
-          <c-bth-tip icon tooltip="Refresh" @click="reload">
+          </c-btn-tip>
+          <c-btn-tip icon tooltip="Refresh" @click="reload">
             <v-icon>mdi-refresh</v-icon>
-          </c-bth-tip>
+          </c-btn-tip>
         </v-toolbar>
       </template>
     </v-data-table>
