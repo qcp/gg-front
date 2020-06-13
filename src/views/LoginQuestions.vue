@@ -6,7 +6,8 @@
       dense
       outlined
       :type="alert.type"
-    >{{alert.text}}</v-alert>
+      >{{ alert.text }}</v-alert
+    >
 
     <v-card max-width="600">
       <v-tabs v-model="tab" grow>
@@ -37,11 +38,15 @@
         <v-tab-item key="newSecret">
           <v-card flat>
             <v-card-subtitle>
-              If your email is in the list of current tests, we
-              will send you a message with a new secret.
+              If your email is in the list of current tests, we will send you a
+              message with a new secret.
             </v-card-subtitle>
             <v-card-text>
-              <v-text-field v-model="email" label="Email" required></v-text-field>
+              <v-text-field
+                v-model="email"
+                label="Email"
+                required
+              ></v-text-field>
             </v-card-text>
             <v-card-actions>
               <v-spacer />
@@ -50,7 +55,8 @@
                 color="primary"
                 :disabled="!email.match(/\S+@\S+\.\S+/)"
                 @click="resendEmailSecret"
-              >Resend secret</v-btn>
+                >Resend secret</v-btn
+              >
               <v-spacer />
             </v-card-actions>
           </v-card>

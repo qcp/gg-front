@@ -11,19 +11,20 @@ Vue.use(VueRouter);
 async function checkUserRole(to, from, next) {
   new Promise(resolve => {
     resolve();
-  }).then(() => {
-    if (store.getters.token && !store.getters.user)
-      return store.dispatch("login", store.getters.token);
-  }).then(() => {
-    if (store.getters.user.role == to.matched[0].meta.role)
-      next();
-    else
-      throw "Wrong route";
-  }).catch(err => {
-    console.error(err);
-    store.dispatch("logout");
-    next("/login");
-  });
+  })
+    .then(() => {
+      if (store.getters.token && !store.getters.user)
+        return store.dispatch("login", store.getters.token);
+    })
+    .then(() => {
+      if (store.getters.user.role == to.matched[0].meta.role) next();
+      else throw "Wrong route";
+    })
+    .catch(err => {
+      console.error(err);
+      store.dispatch("logout");
+      next("/login");
+    });
 }
 
 const routes = [
@@ -95,7 +96,7 @@ const routes = [
   {
     path: "/about",
     name: "About",
-    component: function () {
+    component: function() {
       return import("../views/About.vue");
     }
   }

@@ -1,11 +1,15 @@
 <template>
   <v-card flat>
     <v-card class="ma-4">
-      <v-card-title>{{inquirer.general.title}}</v-card-title>
-      <v-card-subtitle>{{inquirer.general.description}}</v-card-subtitle>
+      <v-card-title>{{ inquirer.general.title }}</v-card-title>
+      <v-card-subtitle>{{ inquirer.general.description }}</v-card-subtitle>
     </v-card>
     <v-list class="pt-0">
-      <v-list-item class="my-4" v-for="(criteria) in criterias" :key="criteria._id">
+      <v-list-item
+        class="my-4"
+        v-for="criteria in criterias"
+        :key="criteria._id"
+      >
         <v-card width="100%">
           <component
             :is="criteria.template"
@@ -58,5 +62,4 @@ export default {
 };
 </script>
 
-<style>
-</style>
+<style></style>

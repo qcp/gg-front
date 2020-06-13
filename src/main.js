@@ -8,17 +8,19 @@ import utils from "./plugins/utils";
 
 Vue.config.productionTip = false;
 
-Vue.component('c-date-picker-text', () => import("@/components/datePickerText"));
-Vue.component('c-btn-tip', () => import("@/components/buttonTooltip"));
-Vue.component('c-btn-upload', () => import("@/components/buttonUpload"));
+Vue.component("c-date-picker-text", () =>
+  import("@/components/datePickerText")
+);
+Vue.component("c-btn-tip", () => import("@/components/buttonTooltip"));
+Vue.component("c-btn-upload", () => import("@/components/buttonUpload"));
 
 Vue.use(utils);
 
 new Vue({
   router,
-  store,  
+  store,
   vuetify,
-  render: function (h) {
+  render: function(h) {
     return h(App);
   }
 }).$mount("#app");

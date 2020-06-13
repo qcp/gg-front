@@ -11,13 +11,14 @@
           <v-tab-item key="user">
             <v-card flat>
               <v-card-subtitle>
-                Enter the secret key from the email address in the box
-                below.
+                Enter the secret key from the email address in the box below.
               </v-card-subtitle>
               <v-card-text>
                 <v-textarea
                   v-model="emailSecret"
-                  :rules="[v => v.length > 0 || 'Copy and paste secret from email!']"
+                  :rules="[
+                    v => v.length > 0 || 'Copy and paste secret from email!'
+                  ]"
                   label="Email secret"
                   required
                   auto-grow
@@ -28,7 +29,9 @@
               </v-card-text>
               <v-card-actions>
                 <v-spacer />
-                <v-btn color="primary" @click="onLoginAtempt" large outlined>Login</v-btn>
+                <v-btn color="primary" @click="onLoginAtempt" large outlined
+                  >Login</v-btn
+                >
                 <v-spacer />
               </v-card-actions>
             </v-card>
@@ -36,12 +39,13 @@
           <v-tab-item key="admin">
             <v-card flat>
               <v-card-subtitle>
-                We use your google account to email all form
-                recepients.
+                We use your google account to email all form recepients.
               </v-card-subtitle>
               <v-card-actions>
                 <v-spacer />
-                <v-btn color="primary" @click="onGooglePopup" large outlined>Login with google</v-btn>
+                <v-btn color="primary" @click="onGooglePopup" large outlined
+                  >Login with google</v-btn
+                >
                 <v-spacer />
               </v-card-actions>
             </v-card>
@@ -53,8 +57,6 @@
 </template>
 
 <script>
-import config from "@/config";
-
 export default {
   data: () => ({
     valid: true,
@@ -109,5 +111,4 @@ export default {
 };
 </script>
 
-<style scoped>
-</style>
+<style scoped></style>

@@ -1,9 +1,9 @@
 <template>
   <v-dialog :value="active" :persistent="persistent" :width="width">
     <v-card>
-      <v-card-title class="headline">{{title}}</v-card-title>
-      <v-card-subtitle v-if="subtitle">{{subtitle}}</v-card-subtitle>
-      <v-card-text>{{message}}</v-card-text>
+      <v-card-title class="headline">{{ title }}</v-card-title>
+      <v-card-subtitle v-if="subtitle">{{ subtitle }}</v-card-subtitle>
+      <v-card-text>{{ message }}</v-card-text>
       <v-card-actions>
         <v-spacer></v-spacer>
         <v-btn
@@ -11,13 +11,15 @@
           :color="cancelBtn.color"
           text
           @click.native="cancel"
-        >{{cancelBtn.text}}</v-btn>
+          >{{ cancelBtn.text }}</v-btn
+        >
         <v-btn
           v-if="confirmBtn"
           :color="confirmBtn.color"
           text
           @click.native="confirm"
-        >{{confirmBtn.text}}</v-btn>
+          >{{ confirmBtn.text }}</v-btn
+        >
       </v-card-actions>
     </v-card>
   </v-dialog>

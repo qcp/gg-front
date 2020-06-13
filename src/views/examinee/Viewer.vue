@@ -1,13 +1,22 @@
 <template>
   <div class="custom">
     <v-card>
-      <v-card-title>{{inquirer.general.title}}</v-card-title>
+      <v-card-title>{{ inquirer.general.title }}</v-card-title>
       <v-divider />
-      <v-progress-linear :active="loading" height="2" indeterminate color="primary"></v-progress-linear>
-      <v-card-subtitle>{{inquirer.general.description}}</v-card-subtitle>
+      <v-progress-linear
+        :active="loading"
+        height="2"
+        indeterminate
+        color="primary"
+      ></v-progress-linear>
+      <v-card-subtitle>{{ inquirer.general.description }}</v-card-subtitle>
     </v-card>
     <v-list class="background-light pt-0">
-      <v-list-item class="my-4 px-0" v-for="(criteria) in inquirer.content" :key="criteria._id">
+      <v-list-item
+        class="my-4 px-0"
+        v-for="criteria in inquirer.content"
+        :key="criteria._id"
+      >
         <v-card width="100%">
           <component
             :is="criteria.template"
@@ -19,7 +28,9 @@
     </v-list>
     <v-row>
       <v-spacer />
-      <v-btn :disabled="loading" color="primary" @click="confirm">Send form</v-btn>
+      <v-btn :disabled="loading" color="primary" @click="confirm"
+        >Send form</v-btn
+      >
       <v-spacer />
     </v-row>
   </div>

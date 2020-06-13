@@ -10,7 +10,7 @@
         <slot></slot>
       </v-btn>
     </template>
-    {{tooltip}}
+    {{ tooltip }}
   </v-tooltip>
 </template>
 
@@ -18,7 +18,7 @@
 export default {
   props: {
     handle: Boolean,
-    tooltip: String,
+    tooltip: String
   },
   methods: {
     click: function() {
@@ -28,5 +28,4 @@ export default {
 };
 </script>
 
-<style>
-</style>
+<style></style>

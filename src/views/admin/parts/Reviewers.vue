@@ -12,31 +12,43 @@
         tooltip="Import excel"
         accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
         @select="importExcelReviewers"
+        :disabled="state != 'PREPARE'"
       >
         <v-icon color="green darken-2">mdi-file-import</v-icon>
       </c-btn-upload>
       <c-btn-tip icon tooltip="Send email to all" disabled>
         <v-icon>mdi-gmail</v-icon>
       </c-btn-tip>
-      <c-btn-tip icon tooltip="Add new reviewer" @click="addToList(reviewers.users)">
+      <c-btn-tip
+        icon
+        tooltip="Add new reviewer"
+        @click="addToList(reviewers.users)"
+        :disabled="state != 'PREPARE'"
+      >
         <v-icon>mdi-plus-circle-outline</v-icon>
       </c-btn-tip>
     </v-toolbar>
 
     <v-list class="mt-n4">
-      <v-list-item class="my-4 align-start" v-for="(user) in reviewers.users" :key="user._id">
+      <v-list-item
+        class="my-4 align-start"
+        v-for="user in reviewers.users"
+        :key="user._id"
+      >
         <v-card width="100%" class="d-flex align-center">
           <v-text-field
             v-model="user.name"
             :rules="[v => !!v || 'Name is required']"
             class="mx-2"
             label="Name"
+            :readonly="state != 'PREPARE'"
           ></v-text-field>
           <v-text-field
             v-model="user.email"
             :rules="[v => !!v || 'Email is required']"
             class="mx-2"
             label="Email"
+            :readonly="state != 'PREPARE'"
           ></v-text-field>
           <v-menu
             offset-y
@@ -49,7 +61,7 @@
             <template v-slot:activator="{ on: menu }">
               <v-tooltip bottom>
                 <template v-slot:activator="{ on: tooltip }">
-                  <v-btn class="ml-2" icon v-on="{ ...tooltip, ...menu}">
+                  <v-btn class="ml-2" icon v-on="{ ...tooltip, ...menu }">
                     <v-icon>mdi-information-outline</v-icon>
                   </v-btn>
                 </template>
@@ -59,16 +71,18 @@
             <v-card>
               <v-card-text class="py-2">
                 <strong>Email:</strong>
-                <span>{{`${user.metadata.emailSended?'sended':'not sended'}`}}</span>
+                <span>{{
+                  `${user.metadata.emailSended ? "sended" : "not sended"}`
+                }}</span>
                 <c-btn-tip icon tooltip="Resend email" @click="sendMail(user)">
                   <v-icon>mdi-gmail</v-icon>
                 </c-btn-tip>
               </v-card-text>
               <v-card-text class="py-2">
                 <strong>Last login:</strong>
-                <span
-                  v-if="user.metadata.lastLogin"
-                >{{new Date(user.metadata.lastLogin).toLocaleString()}}</span>
+                <span v-if="user.metadata.lastLogin">{{
+                  new Date(user.metadata.lastLogin).toLocaleString()
+                }}</span>
                 <span v-else>unknown</span>
               </v-card-text>
             </v-card>
@@ -79,6 +93,7 @@
             icon
             tooltip="Remove reviewer"
             @click="removeFromList(reviewers.users, user._id)"
+            :disabled="state != 'PREPARE'"
           >
             <v-icon>mdi-delete</v-icon>
           </c-btn-tip>
@@ -92,13 +107,22 @@
       <v-icon color="teal" class="mr-2">mdi-account-multiple</v-icon>
       <v-toolbar-title>Groups</v-toolbar-title>
       <v-spacer />
-      <c-btn-tip icon tooltip="Add new group" @click="addToList(reviewers.groups)">
+      <c-btn-tip
+        icon
+        tooltip="Add new group"
+        @click="addToList(reviewers.groups)"
+        :disabled="state != 'PREPARE'"
+      >
         <v-icon>mdi-plus-circle-outline</v-icon>
       </c-btn-tip>
     </v-toolbar>
 
     <v-list class="mt-n4">
-      <v-list-item class="my-4 align-start" v-for="(group) in reviewers.groups" :key="group._id">
+      <v-list-item
+        class="my-4 align-start"
+        v-for="group in reviewers.groups"
+        :key="group._id"
+      >
         <v-card width="100%">
           <div class="d-flex align-center">
             <v-text-field
@@ -106,6 +130,7 @@
               :rules="[v => !!v || 'Name is required']"
               class="mx-2"
               label="Name"
+              :readonly="state != 'PREPARE'"
             ></v-text-field>
 
             <c-btn-tip
@@ -113,6 +138,7 @@
               icon
               tooltip="Remove group"
               @click="removeFromList(reviewers.groups, group._id)"
+              :disabled="state != 'PREPARE'"
             >
               <v-icon>mdi-delete</v-icon>
             </c-btn-tip>
@@ -130,10 +156,12 @@
             deletable-chips
             :menu-props="{ bottom: true, offsetY: true }"
             class="mx-2"
+            :readonly="state != 'PREPARE'"
           >
-            <template v-slot:item="{item, on}">
+            <template v-slot:item="{ item, on }">
               <v-list-item v-on="on">
-                <span>{{ item.name }}</span>&nbsp;
+                <span>{{ item.name }}</span
+                >&nbsp;
                 <span class="grey--text caption">({{ item.email }})</span>
               </v-list-item>
             </template>
@@ -156,6 +184,7 @@
         tooltip="Import excel"
         accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
         @select="importExcelApis"
+        :disabled="state != 'PREPARE'"
       >
         <v-icon color="green darken-2">mdi-file-import</v-icon>
       </c-btn-upload>
@@ -163,7 +192,11 @@
         <template v-slot:activator="{ on: menu }">
           <v-tooltip bottom>
             <template v-slot:activator="{ on: tooltip }">
-              <v-btn icon v-on="{ ...tooltip, ...menu}" :disabled="!library.length">
+              <v-btn
+                icon
+                v-on="{ ...tooltip, ...menu }"
+                :disabled="!library.length || state != 'PREPARE'"
+              >
                 <v-icon>mdi-plus-box-multiple-outline</v-icon>
               </v-btn>
             </template>
@@ -185,9 +218,17 @@
                   <td>{{ item.name }}</td>
                   <td>{{ item.description }}</td>
                   <td>
-                    <v-btn icon @click="addToListExtApi(item)" :disabled="!item.available">
-                      <v-icon v-if="item.available" color="success">mdi-plus-circle-outline</v-icon>
-                      <v-icon v-else color="warning">mdi-minus-circle-off-outline</v-icon>
+                    <v-btn
+                      icon
+                      @click="addToListExtApi(item)"
+                      :disabled="!item.available"
+                    >
+                      <v-icon v-if="item.available" color="success"
+                        >mdi-plus-circle-outline</v-icon
+                      >
+                      <v-icon v-else color="warning"
+                        >mdi-minus-circle-off-outline</v-icon
+                      >
                     </v-btn>
                   </td>
                 </tr>
@@ -196,25 +237,36 @@
           </v-simple-table>
         </v-card>
       </v-dialog>
-      <c-btn-tip icon tooltip="Add new auto test" @click="addToList(reviewers.apis)">
+      <c-btn-tip
+        icon
+        tooltip="Add new auto test"
+        @click="addToList(reviewers.apis)"
+        :disabled="state != 'PREPARE'"
+      >
         <v-icon>mdi-plus-circle-outline</v-icon>
       </c-btn-tip>
     </v-toolbar>
 
     <v-list class="mt-n4">
-      <v-list-item class="my-4 align-start" v-for="(api) in reviewers.apis" :key="api._id">
+      <v-list-item
+        class="my-4 align-start"
+        v-for="api in reviewers.apis"
+        :key="api._id"
+      >
         <v-card width="100%" class="d-flex align-center">
           <v-text-field
             v-model="api.name"
             :rules="[v => !!v || 'Name is required']"
             class="mx-2"
             label="Name"
+            :readonly="state != 'PREPARE'"
           ></v-text-field>
           <v-text-field
             v-model="api.url"
             :rules="[v => !!v || 'Url is required']"
             class="mx-2"
             label="Url"
+            :readonly="state != 'PREPARE'"
             @change="checkApi(api)"
           ></v-text-field>
           <v-menu
@@ -228,8 +280,10 @@
             <template v-slot:activator="{ on: menu }">
               <v-tooltip bottom>
                 <template v-slot:activator="{ on: tooltip }">
-                  <v-btn class="ml-2" icon v-on="{ ...tooltip, ...menu}">
-                    <v-icon v-if="api.metadata.available" color="success">mdi-code-tags-check</v-icon>
+                  <v-btn class="ml-2" icon v-on="{ ...tooltip, ...menu }">
+                    <v-icon v-if="api.metadata.available" color="success"
+                      >mdi-code-tags-check</v-icon
+                    >
                     <v-icon v-else color="warning">mdi-code-tags</v-icon>
                   </v-btn>
                 </template>
@@ -239,12 +293,14 @@
             <v-card>
               <v-card-text class="py-2">
                 <strong>Sysname:</strong>
-                <span v-if="api.metadata.name">{{api.metadata.name}}</span>
+                <span v-if="api.metadata.name">{{ api.metadata.name }}</span>
                 <span v-else>unknown</span>
               </v-card-text>
               <v-card-text class="py-2">
                 <strong>Description:</strong>
-                <span v-if="api.metadata.description">{{api.metadata.description}}</span>
+                <span v-if="api.metadata.description">{{
+                  api.metadata.description
+                }}</span>
                 <span v-else>unknown</span>
               </v-card-text>
             </v-card>
@@ -254,6 +310,7 @@
             icon
             tooltip="Remove auto tesr"
             @click="removeFromList(reviewers.apis, api._id)"
+            :disabled="state != 'PREPARE'"
           >
             <v-icon>mdi-delete</v-icon>
           </c-btn-tip>
@@ -270,7 +327,8 @@ import excel from "@/plugins/excel";
 export default {
   props: {
     value: Object,
-    inquirerId: String
+    inquirerId: String,
+    state: String
   },
   data: () => ({
     library: []
@@ -314,10 +372,10 @@ export default {
         inquirerId: this.inquirerId,
         recepientId: recepient._id
       })
-        .then(res => {
+        .then(() => {
           this.$set(recepient.metadata, "emailSended", true);
         })
-        .catch(err => {
+        .catch(() => {
           this.$set(recepient.metadata, "emailSended", false);
         });
     },
@@ -330,9 +388,9 @@ export default {
         .then(res => {
           if (res.status != "OK") throw res.error;
           this.$set(api, "metadata", res.metadata);
-          api.name = !!api.name ? api.name : api.metadata.name;
+          api.name = api.name ? api.name : api.metadata.name;
         })
-        .catch(err => {
+        .catch(() => {
           this.$set(api, "metadata", { available: false });
         });
     },
@@ -422,5 +480,4 @@ export default {
 };
 </script>
 
-<style>
-</style>
+<style></style>

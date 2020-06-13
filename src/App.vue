@@ -1,7 +1,14 @@
 <template>
   <v-app>
-    <v-app-bar v-if="$store.getters.user" app dark color="primary" extended collapse-on-scroll>
-      <v-toolbar-title>{{$route.name}}</v-toolbar-title>
+    <v-app-bar
+      v-if="$store.getters.user"
+      app
+      dark
+      color="primary"
+      extended
+      collapse-on-scroll
+    >
+      <v-toolbar-title>{{ $route.name }}</v-toolbar-title>
       <v-spacer></v-spacer>
       <div class="hide_on_collapse">
         <v-menu
@@ -87,4 +94,3 @@ export default {
   display: none;
 }
 </style>
-

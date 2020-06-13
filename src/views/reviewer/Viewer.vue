@@ -11,21 +11,38 @@
               color="grey lighten-5"
             >
               <template v-slot:icon>
-                <v-badge color="pink darken-1" :content="decision.step+1">
+                <v-badge color="pink darken-1" :content="decision.step + 1">
                   <v-icon
                     class="ma-0"
-                    :color="decision.reviewer.type == 'api' ? 'lime' : decision.reviewer.type == 'group' ? 'teal' : 'cyan'"
-                  >{{decision.reviewer.type == 'api' ? 'mdi-robot' : decision.reviewer.type == 'group' ? 'mdi-account-multiple' : 'mdi-account' }}</v-icon>
+                    :color="
+                      decision.reviewer.type == 'api'
+                        ? 'lime'
+                        : decision.reviewer.type == 'group'
+                        ? 'teal'
+                        : 'cyan'
+                    "
+                    >{{
+                      decision.reviewer.type == "api"
+                        ? "mdi-robot"
+                        : decision.reviewer.type == "group"
+                        ? "mdi-account-multiple"
+                        : "mdi-account"
+                    }}</v-icon
+                  >
                 </v-badge>
               </template>
               <v-card>
-                <v-card-title dense class="pa-2">{{decision.pretty}}</v-card-title>
+                <v-card-title dense class="pa-2">{{
+                  decision.pretty
+                }}</v-card-title>
                 <v-card-subtitle dense class="pa-2">
-                  {{new Date(decision.date).toLocaleString()}}:
-                  <b>{{decision.reviewer.name}}</b>
+                  {{ new Date(decision.date).toLocaleString() }}:
+                  <b>{{ decision.reviewer.name }}</b>
                 </v-card-subtitle>
                 <v-divider />
-                <v-card-text dense class="pa-2">{{decision.comment}}</v-card-text>
+                <v-card-text dense class="pa-2">{{
+                  decision.comment
+                }}</v-card-text>
               </v-card>
             </v-timeline-item>
           </v-timeline>
@@ -52,7 +69,9 @@
               :key="parameterIndex"
               class="d-flex align-center"
             >
-              <span class="subtitle-1 parameter-name mr-2">{{parameter.description}}:</span>
+              <span class="subtitle-1 parameter-name mr-2"
+                >{{ parameter.description }}:</span
+              >
               <v-text-field
                 v-model="current.decision.parameters[parameterIndex].value"
                 :prefix="parameter.name + ' = '"
@@ -63,7 +82,11 @@
             </v-list-item>
           </v-list>
           <v-card-text class="py-0">
-            <v-textarea v-model="current.decision.comment" rows="3" label="Commment"></v-textarea>
+            <v-textarea
+              v-model="current.decision.comment"
+              rows="3"
+              label="Commment"
+            ></v-textarea>
           </v-card-text>
         </v-expansion-panel-content>
       </v-expansion-panel>
@@ -210,7 +233,7 @@ export default {
         examineeId: this.current.examinee._id,
         criteriaId: this.current.content._id,
         decision: this.current.decision
-      }).then(res => {
+      }).then(() => {
         this.loading = false;
         this.viewed++;
         this.next();

@@ -3,7 +3,14 @@
     <div style="position: sticky; top: 10px">
       <v-tooltip top>
         <template v-slot:activator="{ on }">
-          <v-btn v-on="on" fab small absolute style="right:-50px" @click="$router.push('builder')">
+          <v-btn
+            v-on="on"
+            fab
+            small
+            absolute
+            style="right:-50px"
+            @click="$router.push('builder')"
+          >
             <v-icon color="success">mdi-plus-circle-outline</v-icon>
           </v-btn>
         </template>

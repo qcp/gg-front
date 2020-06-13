@@ -3,12 +3,27 @@
     <v-data-table :loading="loading" :headers="headers" :items="results">
       <template v-slot:top>
         <v-toolbar flat>
-          <v-toolbar-title>There are all examinees who already answered</v-toolbar-title>
+          <v-toolbar-title v-if="state == 'PREPARE'"
+            >Inquirer not started</v-toolbar-title
+          >
+          <v-toolbar-title v-else
+            >There are all examinees who already answered</v-toolbar-title
+          >
           <v-spacer />
-          <c-btn-tip icon tooltip="Export excel" @click="exportExcel">
+          <c-btn-tip
+            icon
+            tooltip="Export excel"
+            @click="exportExcel"
+            :disabled="state == 'PREPARE'"
+          >
             <v-icon color="green darken-2">mdi-file-export</v-icon>
           </c-btn-tip>
-          <c-btn-tip icon tooltip="Refresh" @click="reload">
+          <c-btn-tip
+            icon
+            tooltip="Refresh"
+            @click="reload"
+            :disabled="state == 'PREPARE'"
+          >
             <v-icon>mdi-refresh</v-icon>
           </c-btn-tip>
         </v-toolbar>
@@ -23,7 +38,8 @@ import excel from "@/plugins/excel";
 export default {
   props: {
     inquirerId: String,
-    isActive: Boolean
+    isActive: Boolean,
+    state: String
   },
   data: () => ({
     loading: true,
@@ -85,5 +101,4 @@ export default {
 };
 </script>
 
-<style>
-</style>
+<style></style>

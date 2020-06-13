@@ -8,18 +8,30 @@
           :key="criteriaIndex"
         >
           <v-card width="100%">
-            <component :is="criteria.template" v-model="criteria.settings"></component>
+            <component
+              :is="criteria.template"
+              v-model="criteria.settings"
+            ></component>
           </v-card>
           <v-card class="d-flex flex-column ml-4">
-            <c-btn-tip icon handle tooltip="Drag to change criteria order">
+            <c-btn-tip
+              icon
+              handle
+              tooltip="Drag to change criteria order"
+              :disabled="state != 'PREPARE'"
+            >
               <v-icon>mdi-drag</v-icon>
             </c-btn-tip>
             <v-dialog transition="slide-x-transition" max-width="800">
               <template v-slot:activator="{ on: menu }">
                 <v-tooltip bottom>
                   <template v-slot:activator="{ on: tooltip }">
-                    <v-btn icon v-on="{ ...tooltip, ...menu}">
-                      <v-badge color="warning" dot :value="!criteria.parameters.length">
+                    <v-btn icon v-on="{ ...tooltip, ...menu }">
+                      <v-badge
+                        color="warning"
+                        dot
+                        :value="!criteria.parameters.length"
+                      >
                         <v-icon>mdi-file-presentation-box</v-icon>
                       </v-badge>
                     </v-btn>
@@ -43,24 +55,40 @@
                             class="ml-3 mr-2"
                             label="Parameter short name"
                             dense
+                            :readonly="state != 'PREPARE'"
                           ></v-text-field>
                           <v-text-field
                             v-model="parameter.description"
-                            :rules="[v => !!v || 'Parameter description is required']"
+                            :rules="[
+                              v => !!v || 'Parameter description is required'
+                            ]"
                             class="mr-2"
                             label="Parameter description"
                             dense
+                            :readonly="state != 'PREPARE'"
                           ></v-text-field>
                           <c-btn-tip
                             dense
                             icon
                             tooltip="Remove parameter"
-                            @click="removeParameter(criteria.parameters, parameterIndex)"
+                            @click="
+                              removeParameter(
+                                criteria.parameters,
+                                parameterIndex
+                              )
+                            "
+                            :disabled="state != 'PREPARE'"
                           >
                             <v-icon>mdi-delete</v-icon>
                           </c-btn-tip>
                         </v-row>
-                        <v-textarea v-model="parameter.hint" label="Parameter hint" rows="3" dense></v-textarea>
+                        <v-textarea
+                          v-model="parameter.hint"
+                          label="Parameter hint"
+                          rows="3"
+                          dense
+                          :readonly="state != 'PREPARE'"
+                        ></v-textarea>
                       </v-card-text>
                     </v-card>
                   </v-list-item>
@@ -72,6 +100,7 @@
                     large
                     tooltip="Add new parameter"
                     @click="addParameter(criteria.parameters)"
+                    :disabled="state != 'PREPARE'"
                   >
                     <v-icon>mdi-plus-circle-outline</v-icon>
                   </c-btn-tip>
@@ -83,8 +112,12 @@
               <template v-slot:activator="{ on: menu }">
                 <v-tooltip bottom>
                   <template v-slot:activator="{ on: tooltip }">
-                    <v-btn icon v-on="{ ...tooltip, ...menu}">
-                      <v-badge color="warning" dot :value="!criteria.reviewerChain.length">
+                    <v-btn icon v-on="{ ...tooltip, ...menu }">
+                      <v-badge
+                        color="warning"
+                        dot
+                        :value="!criteria.reviewerChain.length"
+                      >
                         <v-icon>mdi-account-multiple</v-icon>
                       </v-badge>
                     </v-btn>
@@ -96,43 +129,79 @@
                 <v-list>
                   <draggable v-model="criteria.reviewerChain" handle=".handle">
                     <v-list-item
-                      v-for="(chainLink, chainLinkIndex) in criteria.reviewerChain"
+                      v-for="(chainLink,
+                      chainLinkIndex) in criteria.reviewerChain"
                       :key="chainLinkIndex"
                     >
                       <v-chip
-                        :color="`pink lighten-${Math.abs(chainLinkIndex%8-4)+1}`"
-                      >{{chainLinkIndex+1}}</v-chip>
+                        :color="
+                          `pink lighten-${Math.abs((chainLinkIndex % 8) - 4) +
+                            1}`
+                        "
+                        >{{ chainLinkIndex + 1 }}</v-chip
+                      >
                       <v-select
                         v-model="chainLink.reviewers"
-                        :rules="[v => !!v.length || 'At least one rewiewer required']"
+                        :rules="[
+                          v => !!v.length || 'At least one rewiewer required'
+                        ]"
                         :items="reviewersList"
                         item-value="_id"
-                        :label="`Reviewers for ${chainLinkIndex+1} step`"
+                        :label="`Reviewers for ${chainLinkIndex + 1} step`"
                         multiple
                         hide-selected
                         :menu-props="{ top: true, offsetY: true }"
                         class="mx-2"
+                        :readonly="state != 'PREPARE'"
                       >
-                        <template v-slot:selection="{ attrs, item, parent, selected }">
+                        <template
+                          v-slot:selection="{ attrs, item, parent, selected }"
+                        >
                           <v-chip
                             v-bind="attrs"
                             :input-value="selected"
-                            close
+                            :close="state == 'PREPARE'"
                             @click:close="parent.selectItem(item)"
                           >
                             <v-icon
                               left
-                              :color="item.type == 'api' ? 'lime' : item.type == 'group' ? 'teal' : 'cyan'"
-                            >{{item.type == 'api' ? 'mdi-robot' : item.type == 'group' ? 'mdi-account-multiple' : 'mdi-account' }}</v-icon>
+                              :color="
+                                item.type == 'api'
+                                  ? 'lime'
+                                  : item.type == 'group'
+                                  ? 'teal'
+                                  : 'cyan'
+                              "
+                              >{{
+                                item.type == "api"
+                                  ? "mdi-robot"
+                                  : item.type == "group"
+                                  ? "mdi-account-multiple"
+                                  : "mdi-account"
+                              }}</v-icon
+                            >
                             {{ item.name }}
                           </v-chip>
                         </template>
-                        <template v-slot:item="{item, on}">
+                        <template v-slot:item="{ item, on }">
                           <v-list-item v-on="on">
                             <v-icon
                               left
-                              :color="item.type == 'api' ? 'lime' : item.type == 'group' ? 'teal' : 'cyan'"
-                            >{{item.type == 'api' ? 'mdi-robot' : item.type == 'group' ? 'mdi-account-multiple' : 'mdi-account' }}</v-icon>
+                              :color="
+                                item.type == 'api'
+                                  ? 'lime'
+                                  : item.type == 'group'
+                                  ? 'teal'
+                                  : 'cyan'
+                              "
+                              >{{
+                                item.type == "api"
+                                  ? "mdi-robot"
+                                  : item.type == "group"
+                                  ? "mdi-account-multiple"
+                                  : "mdi-account"
+                              }}</v-icon
+                            >
                             <span>{{ item.name }}</span>
                           </v-list-item>
                         </template>
@@ -142,11 +211,23 @@
                         dense
                         icon
                         tooltip="Remove chain link"
-                        @click="removeChainLink(criteria.reviewerChain, chainLinkIndex)"
+                        @click="
+                          removeChainLink(
+                            criteria.reviewerChain,
+                            chainLinkIndex
+                          )
+                        "
+                        :disabled="state != 'PREPARE'"
                       >
                         <v-icon>mdi-delete</v-icon>
                       </c-btn-tip>
-                      <c-btn-tip dense icon handle tooltip="Drag to change chain link order">
+                      <c-btn-tip
+                        dense
+                        icon
+                        handle
+                        tooltip="Drag to change chain link order"
+                        :disabled="state != 'PREPARE'"
+                      >
                         <v-icon>mdi-drag</v-icon>
                       </c-btn-tip>
                     </v-list-item>
@@ -159,6 +240,7 @@
                     large
                     tooltip="Add new reviewer chain link"
                     @click="addChainLink(criteria.reviewerChain)"
+                    :disabled="state != 'PREPARE'"
                   >
                     <v-icon>mdi-plus-circle-outline</v-icon>
                   </c-btn-tip>
@@ -167,7 +249,12 @@
               </v-card>
             </v-dialog>
             <v-divider />
-            <c-btn-tip icon tooltip="Remove" @click="removeCriteria(criteriaIndex)">
+            <c-btn-tip
+              icon
+              tooltip="Remove"
+              @click="removeCriteria(criteriaIndex)"
+              :disabled="state != 'PREPARE'"
+            >
               <v-icon>mdi-delete</v-icon>
             </c-btn-tip>
           </v-card>
@@ -185,6 +272,7 @@
         append-icon="mdi-plus-circle-outline"
         solo
         editable
+        :disabled="state != 'PREPARE'"
       ></v-overflow-btn>
     </v-list>
   </v-card>
@@ -200,7 +288,8 @@ export default {
   },
   props: {
     value: Array,
-    reviewers: Object
+    reviewers: Object,
+    state: String
   },
   data: () => ({
     components: components

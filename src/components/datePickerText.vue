@@ -6,7 +6,7 @@
     transition="scale-transition"
     offset-y
     min-width="290px"
-    :disabled="disabled"
+    :disabled="disabled || readonly"
   >
     <template v-slot:activator="{ on }">
       <v-text-field
@@ -20,7 +20,7 @@
       ></v-text-field>
     </template>
     <v-date-picker
-      v-model="date"      
+      v-model="date"
       :min="min"
       @input="menu = false"
     ></v-date-picker>
@@ -34,6 +34,7 @@ export default {
     label: String,
     rules: Array,
     disabled: Boolean,
+    readonly: Boolean,
     min: String
   },
   data: () => ({
@@ -52,5 +53,4 @@ export default {
 };
 </script>
 
-<style>
-</style>
+<style></style>
