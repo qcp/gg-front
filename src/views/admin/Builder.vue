@@ -20,18 +20,17 @@
       <v-tooltip top>
         <template v-slot:activator="{ on }">
           <v-btn
-            v-on="on"
+            v-on="on" 
+            v-if="inquirer.state == 'PREPARE'"           
             fab
             small
             absolute
             style="right:-50px"
-            @click="save"
-            :disabled="inquirer.state != 'PREPARE'"
+            @click="save"            
           >
             <v-badge
               :color="saveButton.color"
               dot
-              :value="inquirer.state == 'PREPARE'"
             >
               <v-icon color="primary">mdi-content-save</v-icon>
             </v-badge>

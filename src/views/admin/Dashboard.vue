@@ -35,7 +35,8 @@ export default {
     loading: true,
     headers: [
       { text: "Inquirer", value: "general.title" },
-      { text: "Description", value: "general.description" }
+      { text: "Description", value: "general.description" },
+      { text: "State", value: "state" }
     ],
     items: []
   }),

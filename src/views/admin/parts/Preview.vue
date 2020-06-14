@@ -50,7 +50,7 @@ export default {
         component: item.component,
         answer: components
           .find(o => o.sysname === item.component)
-          .defaultAnswer(),
+          .defaultAnswer(item.settings),
         settings: item.settings,
         template: components.find(o => o.sysname === item.component).examinee
       }));

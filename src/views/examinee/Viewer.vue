@@ -66,7 +66,7 @@ export default {
             );
             criteria.template = component.examinee; //не реактивное свойство
             if (!criteria.answer)
-              this.$set(criteria, "answer", component.defaultAnswer()); //реактивное свойство
+              this.$set(criteria, "answer", component.defaultAnswer(criteria.settings)); //реактивное свойство
           });
         })
         .then(() => {
