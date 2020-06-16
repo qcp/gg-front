@@ -20,18 +20,15 @@
       <v-tooltip top>
         <template v-slot:activator="{ on }">
           <v-btn
-            v-on="on" 
-            v-if="inquirer.state == 'PREPARE'"           
+            v-on="on"
+            v-if="inquirer.state == 'PREPARE'"
             fab
             small
             absolute
             style="right:-50px"
-            @click="save"            
+            @click="save"
           >
-            <v-badge
-              :color="saveButton.color"
-              dot
-            >
+            <v-badge :color="saveButton.color" dot>
               <v-icon color="primary">mdi-content-save</v-icon>
             </v-badge>
           </v-btn>
@@ -42,7 +39,7 @@
 
     <v-card flat :disabled="loading">
       <v-tabs v-model="tab" grow center-active show-arrows="mobile">
-        <v-tab key="general">General</v-tab>        
+        <v-tab key="general">General</v-tab>
         <v-tab key="examinees">Examinees</v-tab>
         <v-tab key="reviewers">Reviewers</v-tab>
         <v-tab key="content">Content</v-tab>

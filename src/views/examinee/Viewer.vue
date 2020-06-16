@@ -11,7 +11,7 @@
       ></v-progress-linear>
       <v-card-subtitle>{{ inquirer.general.description }}</v-card-subtitle>
     </v-card>
-    <v-list class="background-light pt-0">
+    <v-list class="background-light pt-0" :disabled="inquirer.state == 'done'">
       <v-list-item
         class="my-4 px-0"
         v-for="criteria in inquirer.content"
@@ -26,10 +26,14 @@
         </v-card>
       </v-list-item>
     </v-list>
-    <v-row>
+    <v-row v-if="inquirer.state != 'done'">
       <v-spacer />
-      <v-btn :disabled="loading" color="primary" @click="confirm"
-        >Send form</v-btn
+      <v-btn :disabled="loading" color="secondary" @click="confirm('draft')"
+        >Save draft</v-btn
+      >
+      <v-spacer />
+      <v-btn :disabled="loading" color="primary" @click="confirm('done')"
+        >Send for evaluation</v-btn
       >
       <v-spacer />
     </v-row>
@@ -47,6 +51,7 @@ export default {
         title: "Inquirer name",
         description: "Please wait"
       },
+      state: "",
       content: []
     }
   }),
@@ -66,17 +71,33 @@ export default {
             );
             criteria.template = component.examinee; //не реактивное свойство
             if (!criteria.answer)
-              this.$set(criteria, "answer", component.defaultAnswer(criteria.settings)); //реактивное свойство
+              this.$set(
+                criteria,
+                "answer",
+                component.defaultAnswer(criteria.settings)
+              ); //реактивное свойство
           });
         })
         .then(() => {
           this.loading = false;
+
+          if (this.inquirer.state == "done") {
+            this.$root.$modal({
+              persistent: true,
+              title: "Your answers are evaluated",
+              message: "You couldn't change it now",
+              confirmBtn: {
+                text: "OK"
+              }
+            });
+          }
         });
     },
-    confirm: function() {
+    confirm: function(state) {
       this.loading = true;
       this.$backCall("/e/viewer", "POST", {
         inquirerId: this.inquirer._id,
+        state: state,
         examineeId: this.$store.getters.user._id,
         content: this.inquirer.content.map(criteria => ({
           _id: criteria._id,
@@ -84,6 +105,7 @@ export default {
         }))
       }).then(() => {
         this.loading = false;
+        this.inquirer.state = state;
         this.$root
           .$modal({
             persistent: true,

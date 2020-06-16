@@ -25,7 +25,39 @@
       @click:row="edit"
       loading-text="Loading... Please wait"
       no-data-text="No one inquirer found"
-    ></v-data-table>
+    >
+      <template v-slot:item.state="{ item }">
+        <v-chip
+          small
+          :color="
+            item.state == 'IN_PROGRESS'
+              ? 'warning'
+              : item.state == 'DONE'
+              ? 'success'
+              : ''
+          "
+          >{{ item.state }}</v-chip
+        >
+      </template>
+      <template v-slot:item.statistics="{ item }">
+        <v-chip v-if="item.statistics.none" small class="mx-1"
+          ><v-icon left>mdi-account-clock</v-icon
+          >{{ item.statistics.none }}</v-chip
+        >
+        <v-chip v-if="item.statistics.draft" small class="mx-1"
+          ><v-icon left>mdi-account-edit</v-icon
+          >{{ item.statistics.draft }}</v-chip
+        >
+        <v-chip v-if="item.statistics.done" small class="mx-1"
+          ><v-icon left>mdi-account-check</v-icon
+          >{{ item.statistics.done }}</v-chip
+        >
+        <v-chip v-if="item.statistics.all" small class="mx-1"
+          ><v-icon left>mdi-account-group</v-icon
+          >{{ item.statistics.all }}</v-chip
+        >
+      </template>
+    </v-data-table>
   </v-card>
 </template>
 
@@ -36,7 +68,8 @@ export default {
     headers: [
       { text: "Inquirer", value: "general.title" },
       { text: "Description", value: "general.description" },
-      { text: "State", value: "state" }
+      { text: "State", value: "state" },
+      { text: "Statistics", value: "statistics" }
     ],
     items: []
   }),
