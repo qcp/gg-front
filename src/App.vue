@@ -54,7 +54,7 @@
       </c-btn-tip>
     </v-app-bar>
     <v-main>
-      <v-container fill-height style="max-width:1000px">
+      <v-container fill-height style="max-width:1400px">
         <router-view />
       </v-container>
     </v-main>

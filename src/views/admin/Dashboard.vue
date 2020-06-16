@@ -40,19 +40,19 @@
         >
       </template>
       <template v-slot:item.statistics="{ item }">
-        <v-chip v-if="item.statistics.none" small class="mx-1"
+        <v-chip v-if="item.statistics.none" small class="ma-1"
           ><v-icon left>mdi-account-clock</v-icon
           >{{ item.statistics.none }}</v-chip
         >
-        <v-chip v-if="item.statistics.draft" small class="mx-1"
+        <v-chip v-if="item.statistics.draft" small class="ma-1"
           ><v-icon left>mdi-account-edit</v-icon
           >{{ item.statistics.draft }}</v-chip
         >
-        <v-chip v-if="item.statistics.done" small class="mx-1"
+        <v-chip v-if="item.statistics.done" small class="ma-1"
           ><v-icon left>mdi-account-check</v-icon
           >{{ item.statistics.done }}</v-chip
         >
-        <v-chip v-if="item.statistics.all" small class="mx-1"
+        <v-chip v-if="item.statistics.all" small class="ma-1"
           ><v-icon left>mdi-account-group</v-icon
           >{{ item.statistics.all }}</v-chip
         >
